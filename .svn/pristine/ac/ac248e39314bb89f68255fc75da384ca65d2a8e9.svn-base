@@ -1,0 +1,108 @@
+﻿using LateCat.PoseidonEngine.Abstractions;
+using LateCat.PoseidonEngine.Core;
+using LateCat.Views;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Interop;
+using System.Windows.Threading;
+
+namespace LateCat
+{
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        private ScreenLayoutView _layoutWnd;
+
+        public MainWindow()
+        {
+            InitializeComponent();
+
+            App.Services.GetRequiredService<IDesktopCore>().WallpaperChanged += SetupDesktop_WallpaperChanged;
+        }
+
+        #region wallpaper statusbar
+
+        private void SetupDesktop_WallpaperChanged(object? sender, EventArgs e)
+        {
+            _ = Dispatcher.BeginInvoke(new Action(() =>
+            {
+                var settings = App.Services.GetRequiredService<ISettingsService>();
+                if (!settings.Settings.ControlPanelOpened &&
+                    WindowState != WindowState.Minimized &&
+                    Visibility == Visibility.Visible)
+                {
+                    settings.Settings.ControlPanelOpened = true;
+                    settings.SaveSettings();
+                }
+                if (IsVisible && (_layoutWnd == null || _layoutWnd.Visibility != Visibility.Visible))
+                {
+                    Activate();
+                }
+            }));
+        }
+
+        public void ShowControlPanelDialog()
+        {
+            if (_layoutWnd is null)
+            {
+                _layoutWnd = new ScreenLayoutView()
+                {
+                    Owner = this,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Width = Width / 1.5,
+                    Height = Height / 1.5
+                };
+
+                _layoutWnd.Closed += LayoutWindow_Closed;
+                _layoutWnd.Show();
+            }
+            else
+            {
+                _layoutWnd.Activate();
+            }
+        }
+
+        private void LayoutWindow_Closed(object? sender, EventArgs e)
+        {
+            _layoutWnd = null;
+            Activate();
+        }
+
+        private void BtnStatus_Click(object sender, RoutedEventArgs e)
+        {
+            ShowControlPanelDialog();
+        }
+
+        #endregion //wallpaper statusbar
+
+        private void ColorZone_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                DragMove();
+            }
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            Win32.RemoveMenu(
+                Win32.GetSystemMenu(new WindowInteropHelper(this).Handle, 0),
+                Win32.SC_CLOSE,
+                Win32.MF_BYCOMMAND);
+
+            //Media.Source = new Uri(@"C:\Users\appeon\Desktop\Trim.mp4");
+            //Media.LoadedBehavior = MediaState.Manual;
+            //Media.Play();
+        }
+
+        private void BtnClose_Click(object sender, RoutedEventArgs e)
+        {
+            Hide();
+            GC.Collect();
+        }
+    }
+}

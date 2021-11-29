@@ -1,0 +1,95 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
+		<ApplicationIcon>Resources\favicon.ico</ApplicationIcon>
+		<Authors>曾子墨</Authors>
+		<Company>iChike</Company>
+		<UseWindowsForms>True</UseWindowsForms>
+		<StartupObject>LateCat.Program</StartupObject>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="Resources\custom.png" />
+	  <None Remove="Resources\exit.png" />
+	  <None Remove="Resources\favicon.png" />
+	  <None Remove="Resources\home.png" />
+	  <None Remove="Resources\monitor.png" />
+	  <None Remove="Resources\pause.png" />
+	  <None Remove="Resources\play.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Resources\favicon.ico" />
+	</ItemGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="MaterialDesignThemes" Version="4.2.1" />	 
+      <ProjectReference Include="..\LateCat.PoseidonEngine\LateCat.PoseidonEngine.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\custom.png" />
+    <Resource Include="Resources\exit.png" />
+    <Resource Include="Resources\favicon.png" />
+    <Resource Include="Resources\home.png" />
+    <Resource Include="Resources\monitor.png" />
+    <Resource Include="Resources\pause.png" />
+    <Resource Include="Resources\play.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Icons.Designer.cs">
+      <DependentUpon>Icons.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Icons.resx">
+      <LastGenOutput>Icons.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Core\Cef\Pages\PropertiesView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Core\Cef\Views\PropertiesTrayWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Core\Cef\Views\PropertiesWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Render\MediaElementWPF.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Render\WebView2Element.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup />
+  <ItemGroup>
+    <ApplicationDefinition Update="App.xaml">
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Views\WallpaperListView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\WallpaperMedia.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Icons.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Core\Cef\Pages\PropertiesView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Core\Cef\Views\PropertiesTrayWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Core\Cef\Views\PropertiesWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Core\InputForwarding\RawInputDX.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Themes\Generic.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Themes\Custom.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\WallpaperMedia.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\WallpaperPreviewView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\MainWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Render\MediaElementWPF.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Render\WebView2Element.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Monitor\MonitorLabelView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Monitor\MonitorLayoutView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\WallpaperListView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\WndProcMsgWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+</Project>

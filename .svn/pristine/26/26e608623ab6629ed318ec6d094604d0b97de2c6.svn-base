@@ -1,0 +1,40 @@
+﻿<Window        
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:LateCat"
+        xmlns:p = "clr-namespace:LateCat.Properties"                
+        xmlns:Helpers="clr-namespace:LateCat.Helpers" xmlns:views="clr-namespace:LateCat.Views" x:Name="WndMain" x:Class="LateCat.MainWindow"
+        mc:Ignorable="d"
+        Height="666" Width="999" ResizeMode="NoResize" Title="{x:Static p:Resources.TitleAppName}"                
+        Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" Closing="WndMain_Closing" >
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="30"/>
+    </WindowChrome.WindowChrome>
+    <Grid>
+        <materialDesign:ColorZone Mode="PrimaryMid" VerticalAlignment="Top" Margin="0" Padding="5" materialDesign:ShadowAssist.ShadowDepth="Depth0" ClipToBounds="False" MouseDown="ColorZone_MouseDown">
+            <StackPanel Orientation="Horizontal">
+                <Button Height="35" Width="35" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFloatingActionButton}" WindowChrome.IsHitTestVisibleInChrome="True" x:Name="BtnSettings" Margin="10" Cursor="Hand">
+                    <materialDesign:PackIcon Kind="Settings" Height="25" Width="25" Cursor="Hand" />
+                </Button>
+                <Button Style="{StaticResource MaterialDesignRaisedButton}" x:Name="BtnStatus" Height="35" Width="65" Margin="780, 0, 0, 0" WindowChrome.IsHitTestVisibleInChrome="True" HorizontalAlignment="Right" Click="BtnStatus_Click" ToolTip="{x:Static p:Resources.TitleMonitorLayout}" Cursor="Hand">
+                    <StackPanel Orientation="Horizontal" >
+                        <Image Source="pack://application:,,,/Resources/monitor.png" />
+                    </StackPanel>
+                </Button>
+                <Button Height="35" Width="35" Style="{StaticResource MaterialDesignFloatingActionButton}" WindowChrome.IsHitTestVisibleInChrome="True" 
+                        x:Name="BtnClose" Margin="40, 0, 0, 0" Cursor="Hand" Click="BtnClose_Click">
+                    <materialDesign:PackIcon Kind="Close" Height="25" Width="25" Cursor="Hand" />
+                </Button>
+            </StackPanel>
+        </materialDesign:ColorZone>
+        
+        <Frame x:Name="Frame" Source="WallpaperListView.xaml" VerticalAlignment="Top" Margin="0, 65, 0, 0">
+            
+        </Frame>
+        
+    </Grid>
+    
+</Window>

@@ -1,0 +1,100 @@
+﻿using LateCat.Core;
+using LateCat.PoseidonEngine.Abstractions;
+using LateCat.PoseidonEngine.Core;
+using System;
+
+namespace LateCat.Factory
+{
+    internal class WallpaperFactory : IWallpaperFactory
+    {
+        private readonly IPropertyFactory _propertyFactory;
+
+        public WallpaperFactory(IPropertyFactory propertyFactory)
+        {
+            _propertyFactory = propertyFactory;
+        }
+
+        public IWallpaper CreateWallpaper(IWallpaperMetadata metadata, IMonitor monitor, ISettingsService usettings, bool isPreview = false)
+        {
+            return metadata.WallpaperInfo.Type switch
+            {
+                WallpaperType.Web => GetWallpaperFromUrl(metadata, monitor, usettings),
+                WallpaperType.WebAudio => GetWallpaperFromUrl(metadata, monitor, usettings),
+                WallpaperType.Url => GetWallpaperFromUrl(metadata, monitor, usettings),
+                WallpaperType.Video => throw new NotImplementedException(),
+                WallpaperType.Gif => throw new NotImplementedException(),
+                WallpaperType.Picture => throw new NotImplementedException(),
+                WallpaperType.App => throw new NotImplementedException(),
+                WallpaperType.Bizhawk => throw new NotImplementedException(),
+                WallpaperType.Unity => throw new NotImplementedException(),
+                WallpaperType.UnityAudio => throw new NotImplementedException(),
+                WallpaperType.Godot => throw new NotImplementedException(),
+                WallpaperType.VideoStream => throw new NotImplementedException(),
+            };
+        }
+
+        private IWallpaper GetWallpaperFromUrl(IWallpaperMetadata metadata, IMonitor monitor, ISettingsService settings)
+        {
+            return settings.Settings.WebBrowser switch
+            {
+                WebBrowser.Cef => new WebProcess(metadata.FilePath,
+                                        metadata,
+                                        monitor,
+                                        _propertyFactory.CreatePropertyFolder(metadata, monitor, settings.Settings.WallpaperArrangement),
+                                        settings.Settings.CefDiskCache,
+                                        settings.Settings.AudioVolumeGlobal),
+                WebBrowser.WebView2 => new WebEdge(metadata.FilePath, metadata, monitor, _propertyFactory.CreatePropertyFolder(metadata, monitor, settings.Settings.WallpaperArrangement)),
+                _ => throw new NotImplementedException(),
+            };
+        }
+
+        private IWallpaper GetWallpaperFromVideo(IWallpaperMetadata metadata, IMonitor monitor, ISettingsService settings)
+        {
+            return settings.Settings.VideoPlayer switch
+            {
+                MediaPlayerType.wmf => throw new NotImplementedException(),
+                MediaPlayerType.libvlc => throw new NotImplementedException(),
+                MediaPlayerType.libvlcExt => throw new NotImplementedException(),
+                MediaPlayerType.libmpv => throw new NotImplementedException(),
+                MediaPlayerType.libmpvExt => throw new NotImplementedException(),
+                MediaPlayerType.mpv => throw new NotImplementedException(),
+                MediaPlayerType.vlc => throw new NotImplementedException(),
+                _ => throw new NotImplementedException(),
+            };
+        }
+    }
+
+    public class DepreciatedException : Exception
+    {
+        public DepreciatedException()
+        {
+        }
+
+        public DepreciatedException(string message)
+            : base(message)
+        {
+        }
+
+        public DepreciatedException(string message, Exception inner)
+            : base(message, inner)
+        {
+        }
+    }
+
+    public class PluginNotFoundException : Exception
+    {
+        public PluginNotFoundException()
+        {
+        }
+
+        public PluginNotFoundException(string message)
+            : base(message)
+        {
+        }
+
+        public PluginNotFoundException(string message, Exception inner)
+            : base(message, inner)
+        {
+        }
+    }
+}

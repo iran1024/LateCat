@@ -1,0 +1,155 @@
+﻿using LateCat.PoseidonEngine.Abstractions;
+using LateCat.PoseidonEngine.Core;
+using LateCat.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Interop;
+using System.Windows.Threading;
+
+namespace LateCat.Views
+{
+    public interface ILibraryPreview
+    {        
+        public void Exit();
+        
+        public void StartThumbnailCaptureLoop(string savePath);
+               
+        
+        event EventHandler WallpaperAttached;
+        
+        event EventHandler<string> ThumbnailUpdated;
+        
+        event EventHandler<string> PreviewUpdated;
+        
+        event EventHandler<double> CaptureProgress;
+    }
+    
+    public partial class WallpaperLibraryPreviewView : Window, ILibraryPreview
+    {
+        private bool _processing = false;
+        private string thumbnailPathTemp;
+        private readonly WallpaperType wallpaperType;
+        private readonly IntPtr wallpaperHwnd;
+        readonly DispatcherTimer thumbnailCaptureTimer = new DispatcherTimer();
+        
+        readonly int gifAnimationDelay = 1000 * 1 / 30;
+        readonly int gifSaveAnimationDelay = 1000 * 1 / 120;
+        readonly int gifTotalFrames = 60;
+        public event EventHandler<string> ThumbnailUpdated;
+        public event EventHandler<string> PreviewUpdated;
+        public event EventHandler<double> CaptureProgress;
+        public event EventHandler WallpaperAttached;
+
+        private readonly ISettingsService userSettings;
+
+        public WallpaperLibraryPreviewView(IWallpaper wallpaper)
+        {
+            userSettings = App.Services.GetRequiredService<ISettingsService>();
+
+            var vm = new LibraryPreviewViewModel(this, wallpaper);
+            DataContext = vm;
+            Closed += vm.OnWindowClosed;
+            wallpaperHwnd = wallpaper.Handle;
+            wallpaperType = wallpaper.WallpaperType;
+
+            InitializeComponent();
+            PreviewKeyDown += (s, e) => { if (e.Key == Key.Escape) Close(); };
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {            
+            WindowOperations.SetProgramToFramework(this, wallpaperHwnd, PreviewBorder);
+            //refocus window to allow keyboard input.
+            Activate();
+            WallpaperAttached?.Invoke(this, null);
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (_processing)
+            {
+                e.Cancel = true;
+                
+                return;
+            }
+
+            thumbnailCaptureTimer?.Stop();
+            try
+            {                
+                File.Delete(tmpThumbCaptureLoopPath);
+            }
+            catch { }
+            
+            WindowOperations.SetParentSafe(wallpaperHwnd, IntPtr.Zero);
+        }
+
+        private string tmpThumbCaptureLoopPath;
+
+        private void CaptureLoop(object sender, EventArgs e)
+        {
+            var currThumbPath = Path.Combine(thumbnailPathTemp, Path.ChangeExtension(Path.GetRandomFileName(), ".jpg"));
+            if (File.Exists(tmpThumbCaptureLoopPath))
+            {
+                if (wallpaperType == WallpaperType.Picture)
+                    return;
+
+                try
+                {
+                    File.Delete(tmpThumbCaptureLoopPath);
+                }
+                catch
+                {
+                    thumbnailCaptureTimer.Stop();
+                }
+            }
+
+            Rect previewPanelPos = WindowOperations.GetAbsolutePlacement(PreviewBorder, true);
+            Size previewPanelSize = WindowOperations.GetElementPixelSize(PreviewBorder);            
+        }       
+
+        #region interface methods
+
+        public void Exit()
+        {
+            Close();
+        }
+        
+        public void StartThumbnailCaptureLoop(string savePath)
+        {
+            thumbnailPathTemp = savePath;
+            
+            thumbnailCaptureTimer.Tick += new EventHandler(CaptureLoop);
+            thumbnailCaptureTimer.Interval = new TimeSpan(0, 0, 0, 0, 3000);
+            thumbnailCaptureTimer.Start();
+        }
+
+        #endregion //interface methods
+
+        #region window move/resize lock
+
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+            var source = PresentationSource.FromVisual(this) as HwndSource;
+            source.AddHook(WndProc);
+        }
+
+        public IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            if (msg == (int)Win32.WM.WINDOWPOSCHANGING && _processing)
+            {
+                var wp = Marshal.PtrToStructure<Win32.WINDOWPOS>(lParam);
+                wp.flags |= (int)Win32.SetWindowPosFlags.SWP_NOMOVE | (int)Win32.SetWindowPosFlags.SWP_NOSIZE;
+                Marshal.StructureToPtr(wp, lParam, false);
+            }
+            return IntPtr.Zero;
+        }
+
+        #endregion //window move/resize lock
+    }
+}

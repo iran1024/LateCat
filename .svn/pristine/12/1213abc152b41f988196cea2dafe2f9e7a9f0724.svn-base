@@ -1,0 +1,754 @@
+﻿using LateCat.PoseidonEngine.Abstractions;
+using LateCat.PoseidonEngine.Core;
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Forms;
+namespace LateCat.ViewModels
+{
+    public class SettingsViewModel : ObservableObject
+    {
+        private readonly ISettingsService userSettings;
+        private readonly IDesktopCore desktopCore;
+        private readonly ITaskbarOperator ttbService;
+
+        public SettingsViewModel(ISettingsService userSettings, IDesktopCore desktopCore, ITaskbarOperator ttbService)
+        {
+            this.userSettings = userSettings;
+            this.desktopCore = desktopCore;
+            this.ttbService = ttbService;
+
+            userSettings.Settings.SelectedMonitor = MonitorHelper.GetMonitor(userSettings.Settings.SelectedMonitor.DeviceId, userSettings.Settings.SelectedMonitor.DeviceName,
+                        userSettings.Settings.SelectedMonitor.Bounds, userSettings.Settings.SelectedMonitor.WorkingArea, MonitorIdentificationMode.DeviceId) ?? MonitorHelper.GetPrimaryMonitor();
+
+            SelectedTileSizeIndex = userSettings.Settings.TileSize;
+            SelectedAppFullScreenIndex = (int)userSettings.Settings.OtherAppFullScreen;
+            SelectedAppFocusIndex = (int)userSettings.Settings.OtherAppFocus;
+            SelectedBatteryPowerIndex = (int)userSettings.Settings.InBatteryMode;
+            SelectedRemoteDestopPowerIndex = (int)userSettings.Settings.InRemoteDesktop;
+            SelectedPowerSaveModeIndex = (int)userSettings.Settings.PowerSaveMode;
+            SelectedDisplayPauseRuleIndex = (int)userSettings.Settings.MonitorPauseStrategy;
+            SelectedPauseAlgorithmIndex = (int)userSettings.Settings.ProcessMonitorAlgorithm;
+            SelectedVideoPlayerIndex = (int)userSettings.Settings.VideoPlayer;
+            VideoPlayerHWDecode = userSettings.Settings.VideoPlayerHwAccel;
+            SelectedGifPlayerIndex = (int)userSettings.Settings.GifPlayer;
+            SelectedWallpaperStreamQualityIndex = (int)userSettings.Settings.StreamQuality;
+            SelectedWallpaperInputMode = (int)userSettings.Settings.InputForward;
+            MouseMoveOnDesktop = userSettings.Settings.MouseInputMoveAlways;
+            DetectStreamWallpaper = userSettings.Settings.AutoDetectOnlineStreams;
+            WallpaperDirectory = userSettings.Settings.WallpaperDir;
+            MoveExistingWallpaperNewDir = userSettings.Settings.WallpaperDirMoveExistingWallpaperNewDir;
+            GlobalWallpaperVolume = userSettings.Settings.AudioVolumeGlobal;
+            IsAudioOnlyOnDesktop = userSettings.Settings.AudioOnlyOnDesktop;
+            SelectedWallpaperScalingIndex = (int)userSettings.Settings.WallpaperScaling;
+            CefDiskCache = userSettings.Settings.CefDiskCache;            
+            SelectedTaskbarThemeIndex = (int)userSettings.Settings.SystemTaskbarTheme;
+            IsDesktopAutoWallpaper = userSettings.Settings.DesktopAutoWallpaper;
+            SelectedWebBrowserIndex = (int)userSettings.Settings.WebBrowser;
+        }
+
+        public void UpdateConfigFile()
+        {
+            userSettings.SaveSettings();
+        }
+
+        #region general
+
+        private bool _isStartup;
+        public bool IsStartup
+        {
+            get
+            {
+                return _isStartup;
+            }
+            set
+            {
+
+            }
+        }
+
+        private int _selectedTileSizeIndex;
+        public int SelectedTileSizeIndex
+        {
+            get
+            {
+                return _selectedTileSizeIndex;
+            }
+            set
+            {
+                _selectedTileSizeIndex = value;
+                OnPropertyChanged();
+
+                if (userSettings.Settings.TileSize != _selectedTileSizeIndex)
+                {
+                    userSettings.Settings.TileSize = _selectedTileSizeIndex;
+                    UpdateConfigFile();
+                }
+            }
+        }
+
+        private string _wallpaperDirectory;
+        public string WallpaperDirectory
+        {
+            get { return _wallpaperDirectory; }
+            set
+            {
+                _wallpaperDirectory = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private RelayCommand _wallpaperDirectoryChangeCommand;
+        public RelayCommand WallpaperDirectoryChangeCommand
+        {
+            get
+            {
+                if (_wallpaperDirectoryChangeCommand == null)
+                {
+                    _wallpaperDirectoryChangeCommand = new RelayCommand(
+                        param => WallpaperDirectoryChange(), param => !WallpapeDirectoryChanging);
+                }
+                return _wallpaperDirectoryChangeCommand;
+            }
+        }
+
+        private bool _wallpapeDirectoryChanging;
+        public bool WallpapeDirectoryChanging
+        {
+            get { return _wallpapeDirectoryChanging; }
+            set
+            {
+                _wallpapeDirectoryChanging = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _moveExistingWallpaperNewDir;
+        public bool MoveExistingWallpaperNewDir
+        {
+            get { return _moveExistingWallpaperNewDir; }
+            set
+            {
+                _moveExistingWallpaperNewDir = value;
+                OnPropertyChanged();
+
+                if (userSettings.Settings.WallpaperDirMoveExistingWallpaperNewDir != _moveExistingWallpaperNewDir)
+                {
+                    userSettings.Settings.WallpaperDirMoveExistingWallpaperNewDir = _moveExistingWallpaperNewDir;
+                    UpdateConfigFile();
+                }
+            }
+        }
+
+        private RelayCommand _openWallpaperDirectory;
+        public RelayCommand OpenWallpaperDirectory
+        {
+            get
+            {
+                if (_openWallpaperDirectory == null)
+                {
+                    _openWallpaperDirectory = new RelayCommand(
+                            param => FileOperations.OpenFolder(userSettings.Settings.WallpaperDir)
+                        );
+                }
+                return _openWallpaperDirectory;
+            }
+        }
+
+        #endregion general
+
+        #region performance
+
+        private int _selectedAppFullScreenIndex;
+        public int SelectedAppFullScreenIndex
+        {
+            get
+            {
+                return _selectedAppFullScreenIndex;
+            }
+            set
+            {
+                _selectedAppFullScreenIndex = value;
+                OnPropertyChanged();
+
+                if (userSettings.Settings.OtherAppFullScreen != (PerformanceStrategy)_selectedAppFullScreenIndex)
+                {
+                    userSettings.Settings.OtherAppFullScreen = (PerformanceStrategy)_selectedAppFullScreenIndex;
+                    UpdateConfigFile();
+                }
+            }
+        }
+
+        private int _selectedAppFocusIndex;
+        public int SelectedAppFocusIndex
+        {
+            get
+            {
+                return _selectedAppFocusIndex;
+            }
+            set
+            {
+                _selectedAppFocusIndex = value;
+                OnPropertyChanged();
+
+                if (userSettings.Settings.OtherAppFocus != (PerformanceStrategy)_selectedAppFocusIndex)
+                {
+                    userSettings.Settings.OtherAppFocus = (PerformanceStrategy)_selectedAppFocusIndex;
+                    UpdateConfigFile();
+                }
+            }
+        }
+
+        private int _selectedBatteryPowerIndex;
+        public int SelectedBatteryPowerIndex
+        {
+            get
+            {
+                return _selectedBatteryPowerIndex;
+            }
+            set
+            {
+                _selectedBatteryPowerIndex = value;
+                OnPropertyChanged();
+
+                if (userSettings.Settings.InBatteryMode != (PerformanceStrategy)_selectedBatteryPowerIndex)
+                {
+                    userSettings.Settings.InBatteryMode = (PerformanceStrategy)_selectedBatteryPowerIndex;
+                    UpdateConfigFile();
+                }
+            }
+        }
+
+        private int _selectedPowerSaveModeIndex;
+        public int SelectedPowerSaveModeIndex
+        {
+            get
+            {
+                return _selectedPowerSaveModeIndex;
+            }
+            set
+            {
+                _selectedPowerSaveModeIndex = value;
+                OnPropertyChanged();
+
+                if (userSettings.Settings.PowerSaveMode != (PerformanceStrategy)_selectedPowerSaveModeIndex)
+                {
+                    userSettings.Settings.PowerSaveMode = (PerformanceStrategy)_selectedPowerSaveModeIndex;
+                    UpdateConfigFile();
+                }
+            }
+        }
+
+        private int _selectedRemoteDestopPowerIndex;
+        public int SelectedRemoteDestopPowerIndex
+        {
+            get
+            {
+                return _selectedRemoteDestopPowerIndex;
+            }
+            set
+            {
+                _selectedRemoteDestopPowerIndex = value;
+                OnPropertyChanged();
+
+                if (userSettings.Settings.InRemoteDesktop != (PerformanceStrategy)_selectedRemoteDestopPowerIndex)
+                {
+                    userSettings.Settings.InRemoteDesktop = (PerformanceStrategy)_selectedRemoteDestopPowerIndex;
+                    UpdateConfigFile();
+                }
+            }
+        }
+
+        private int _selectedDisplayPauseRuleIndex;
+        public int SelectedDisplayPauseRuleIndex
+        {
+            get
+            {
+                return _selectedDisplayPauseRuleIndex;
+            }
+            set
+            {
+                _selectedDisplayPauseRuleIndex = value;
+                OnPropertyChanged();
+
+                if (userSettings.Settings.MonitorPauseStrategy != (MonitorPauseStrategy)_selectedDisplayPauseRuleIndex)
+                {
+                    userSettings.Settings.MonitorPauseStrategy = (MonitorPauseStrategy)_selectedDisplayPauseRuleIndex;
+                    UpdateConfigFile();
+                }
+            }
+        }
+
+        private int _selectedPauseAlgorithmIndex;
+        public int SelectedPauseAlgorithmIndex
+        {
+            get
+            {
+                return _selectedPauseAlgorithmIndex;
+            }
+            set
+            {
+                _selectedPauseAlgorithmIndex = value;
+                OnPropertyChanged();
+
+                if (userSettings.Settings.ProcessMonitorAlgorithm != (ProcessMonitorAlgorithm)_selectedPauseAlgorithmIndex)
+                {
+                    userSettings.Settings.ProcessMonitorAlgorithm = (ProcessMonitorAlgorithm)_selectedPauseAlgorithmIndex;
+                    UpdateConfigFile();
+                }
+            }
+        }
+
+        #endregion performance
+
+        #region wallpaper
+
+        private int _selectedWallpaperScalingIndex;
+        public int SelectedWallpaperScalingIndex
+        {
+            get { return _selectedWallpaperScalingIndex; }
+            set
+            {
+                _selectedWallpaperScalingIndex = value;
+                OnPropertyChanged();
+
+                if (userSettings.Settings.WallpaperScaling != (WallpaperScaler)_selectedWallpaperScalingIndex)
+                {
+                    userSettings.Settings.WallpaperScaling = (WallpaperScaler)_selectedWallpaperScalingIndex;
+                    UpdateConfigFile();
+
+                    WallpaperRestart(WallpaperType.VideoStream);
+                    WallpaperRestart(WallpaperType.Video);
+                    WallpaperRestart(WallpaperType.Gif);
+                    WallpaperRestart(WallpaperType.Picture);
+                }
+            }
+        }
+
+        private int _selectedWallpaperInputMode;
+        public int SelectedWallpaperInputMode
+        {
+            get { return _selectedWallpaperInputMode; }
+            set
+            {
+                _selectedWallpaperInputMode = value;
+                OnPropertyChanged();
+
+                if (userSettings.Settings.InputForward != (InputForwardMode)_selectedWallpaperInputMode)
+                {
+                    userSettings.Settings.InputForward = (InputForwardMode)_selectedWallpaperInputMode;
+                    UpdateConfigFile();
+                }
+
+                //todo: show msg to user desc whats happening.
+                if (userSettings.Settings.InputForward == InputForwardMode.MouseKeyboard)
+                {
+                    DesktopUtil.SetDesktopIconVisibility(false);
+                }
+                else
+                {
+                    DesktopUtil.SetDesktopIconVisibility(DesktopUtil.DesktopIconVisibilityDefault);
+                }
+            }
+        }
+
+        private int _selectedVideoPlayerIndex;
+        public int SelectedVideoPlayerIndex
+        {
+            get
+            {
+                return _selectedVideoPlayerIndex;
+            }
+            set
+            {
+                _selectedVideoPlayerIndex = CheckVideoPluginExists((MediaPlayerType)value) ? value : (int)MediaPlayerType.MPV;
+                OnPropertyChanged();
+
+                if (userSettings.Settings.VideoPlayer != (MediaPlayerType)_selectedVideoPlayerIndex)
+                {
+                    userSettings.Settings.VideoPlayer = (MediaPlayerType)_selectedVideoPlayerIndex;
+                    UpdateConfigFile();
+                    //VideoPlayerSwitch((LivelyMediaPlayer)_selectedVideoPlayerIndex);
+                    WallpaperRestart(WallpaperType.Video);
+                }
+            }
+        }
+
+        private bool _videoPlayerHWDecode;
+        public bool VideoPlayerHWDecode
+        {
+            get { return _videoPlayerHWDecode; }
+            set
+            {
+                _videoPlayerHWDecode = value;
+                OnPropertyChanged();
+                if (userSettings.Settings.VideoPlayerHwAccel != _videoPlayerHWDecode)
+                {
+                    userSettings.Settings.VideoPlayerHwAccel = _videoPlayerHWDecode;
+                    UpdateConfigFile();
+                    WallpaperRestart(WallpaperType.Video);
+                    WallpaperRestart(WallpaperType.VideoStream);
+                    WallpaperRestart(WallpaperType.Gif);
+                }
+            }
+        }
+
+        private int _selectedGifPlayerIndex;
+        public int SelectedGifPlayerIndex
+        {
+            get
+            {
+                return _selectedGifPlayerIndex;
+            }
+            set
+            {
+                _selectedGifPlayerIndex = CheckGifPluginExists((GifPlayer)value) ? value : (int)GifPlayer.MPV;
+                OnPropertyChanged();
+                if (userSettings.Settings.GifPlayer != (GifPlayer)_selectedGifPlayerIndex)
+                {
+                    userSettings.Settings.GifPlayer = (GifPlayer)_selectedGifPlayerIndex;
+                    UpdateConfigFile();
+                    WallpaperRestart(WallpaperType.Gif);
+                    WallpaperRestart(WallpaperType.Picture);
+                }
+            }
+        }
+
+        private int _selectedWallpaperStreamQualityIndex;
+        public int SelectedWallpaperStreamQualityIndex
+        {
+            get { return _selectedWallpaperStreamQualityIndex; }
+            set
+            {
+                _selectedWallpaperStreamQualityIndex = value;
+                OnPropertyChanged();
+                if (userSettings.Settings.StreamQuality != (StreamQualitySuggestion)_selectedWallpaperStreamQualityIndex)
+                {
+                    userSettings.Settings.StreamQuality = (StreamQualitySuggestion)_selectedWallpaperStreamQualityIndex;
+                    UpdateConfigFile();
+
+                    WallpaperRestart(WallpaperType.VideoStream);
+                }
+            }
+        }
+
+        private int _selectedWebBrowserIndex;
+        public int SelectedWebBrowserIndex
+        {
+            get
+            {
+                return _selectedWebBrowserIndex;
+            }
+            set
+            {
+                _selectedWebBrowserIndex = value;
+                OnPropertyChanged();
+
+                if (userSettings.Settings.WebBrowser != (PoseidonEngine.Core.WebBrowser)_selectedWebBrowserIndex)
+                {
+                    userSettings.Settings.WebBrowser = (PoseidonEngine.Core.WebBrowser)_selectedWebBrowserIndex;
+                    UpdateConfigFile();
+
+                    WallpaperRestart(WallpaperType.Web);
+                    WallpaperRestart(WallpaperType.WebAudio);
+                    WallpaperRestart(WallpaperType.Url);
+                }
+            }
+        }
+
+        private bool _mouseMoveOnDesktop;
+        public bool MouseMoveOnDesktop
+        {
+            get { return _mouseMoveOnDesktop; }
+            set
+            {
+                _mouseMoveOnDesktop = value;
+                OnPropertyChanged();
+
+                if (userSettings.Settings.MouseInputMoveAlways != _mouseMoveOnDesktop)
+                {
+                    userSettings.Settings.MouseInputMoveAlways = _mouseMoveOnDesktop;
+                    UpdateConfigFile();
+                }
+            }
+        }
+
+        private bool _cefDiskCache;
+        public bool CefDiskCache
+        {
+            get { return _cefDiskCache; }
+            set
+            {
+                _cefDiskCache = value;
+                if (userSettings.Settings.CefDiskCache != _cefDiskCache)
+                {
+                    userSettings.Settings.CefDiskCache = _cefDiskCache;
+                    UpdateConfigFile();
+                }
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _detectStreamWallpaper;
+        public bool DetectStreamWallpaper
+        {
+            get { return _detectStreamWallpaper; }
+            set
+            {
+                _detectStreamWallpaper = value;
+                if (userSettings.Settings.AutoDetectOnlineStreams != _detectStreamWallpaper)
+                {
+                    userSettings.Settings.AutoDetectOnlineStreams = _detectStreamWallpaper;
+                    UpdateConfigFile();
+                }
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion wallpaper
+
+        #region audio
+
+        private int _globalWallpaperVolume;
+        public int GlobalWallpaperVolume
+        {
+            get { return _globalWallpaperVolume; }
+            set
+            {
+                _globalWallpaperVolume = value;
+                if (userSettings.Settings.AudioVolumeGlobal != _globalWallpaperVolume)
+                {
+                    userSettings.Settings.AudioVolumeGlobal = _globalWallpaperVolume;
+                    UpdateConfigFile();
+                }
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _isAudioOnlyOnDesktop;
+        public bool IsAudioOnlyOnDesktop
+        {
+            get
+            {
+                return _isAudioOnlyOnDesktop;
+            }
+            set
+            {
+                _isAudioOnlyOnDesktop = value;
+                if (userSettings.Settings.AudioOnlyOnDesktop != _isAudioOnlyOnDesktop)
+                {
+                    userSettings.Settings.AudioOnlyOnDesktop = _isAudioOnlyOnDesktop;
+                    UpdateConfigFile();
+                }
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion //audio
+
+        #region system       
+
+        private bool _isDesktopAutoWallpaper;
+        public bool IsDesktopAutoWallpaper
+        {
+            get
+            {
+                return _isDesktopAutoWallpaper;
+            }
+            set
+            {
+                _isDesktopAutoWallpaper = value;
+                if (userSettings.Settings.DesktopAutoWallpaper != _isDesktopAutoWallpaper)
+                {
+                    userSettings.Settings.DesktopAutoWallpaper = _isDesktopAutoWallpaper;
+                    UpdateConfigFile();
+                }
+                OnPropertyChanged();
+            }
+        }
+
+        private bool ttbInitialized = false;
+        private int _selectedTaskbarThemeIndex;
+        public int SelectedTaskbarThemeIndex
+        {
+            get
+            {
+                return _selectedTaskbarThemeIndex;
+            }
+            set
+            {
+                _selectedTaskbarThemeIndex = value;
+                if (!ttbInitialized)
+                {
+                    if ((TaskbarTheme)_selectedTaskbarThemeIndex != TaskbarTheme.None)
+                    {
+                        string pgm = null;
+                        if ((pgm = ttbService.CheckIncompatiblePrograms()) == null)
+                        {
+                            ttbService.Start((TaskbarTheme)_selectedTaskbarThemeIndex);
+                            ttbInitialized = true;
+                        }
+                        else
+                        {
+                            _selectedTaskbarThemeIndex = (int)TaskbarTheme.None;
+                            _ = Task.Run(() =>
+                                    System.Windows.MessageBox.Show(Properties.Resources.DescIncompatibleTaskbarTheme + "\n\n" + pgm,
+                                        Properties.Resources.TitleAppName, MessageBoxButton.OK, MessageBoxImage.Information));
+                        }
+                    }
+                }
+                else
+                {
+                    ttbService.Start((TaskbarTheme)_selectedTaskbarThemeIndex);
+                }
+                //save the data..
+                if (userSettings.Settings.SystemTaskbarTheme != (TaskbarTheme)_selectedTaskbarThemeIndex)
+                {
+                    userSettings.Settings.SystemTaskbarTheme = (TaskbarTheme)_selectedTaskbarThemeIndex;
+                    UpdateConfigFile();
+                }
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion //system
+
+
+        #region helper fns
+
+        private static bool CheckVideoPluginExists(MediaPlayerType mp)
+        {
+            return mp switch
+            {
+                MediaPlayerType.Wmf => true,
+                MediaPlayerType.LibVLC => false, //depreciated
+                MediaPlayerType.LibMPV => false, //depreciated
+                MediaPlayerType.LibVLCExt => File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "plugins", "libVLCPlayer", "libVLCPlayer.exe")),
+                MediaPlayerType.LibMPVExt => File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "plugins", "libMPVPlayer", "libMPVPlayer.exe")),
+                MediaPlayerType.MPV => File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "plugins", "mpv", "mpv.exe")),
+                MediaPlayerType.VLC => File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "plugins", "vlc", "vlc.exe")),
+                _ => false,
+            };
+        }
+
+        private static bool CheckGifPluginExists(GifPlayer gp)
+        {
+            return gp switch
+            {
+                GifPlayer.LibMPVExt => File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "plugins", "libMPVPlayer", "libMPVPlayer.exe")),
+                GifPlayer.MPV => File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "plugins", "mpv", "mpv.exe")),
+                _ => false,
+            };
+        }
+
+        private void WallpaperRestart(WallpaperType type)
+        {
+
+            var originalWallpapers = desktopCore.Wallpapers.Where(x => x.WallpaperType == type).ToList();
+            if (originalWallpapers.Count > 0)
+            {
+                desktopCore.CloseWallpaper(type, true);
+                foreach (var item in originalWallpapers)
+                {
+                    desktopCore.SetWallpaper(item.Metadata, item.Monitor);
+                    if (userSettings.Settings.WallpaperArrangement == WallpaperArrangement.Span
+                        || userSettings.Settings.WallpaperArrangement == WallpaperArrangement.Duplicate)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        public event EventHandler<string> WallpaperDirChange;
+        private async void WallpaperDirectoryChange()
+        {
+            bool isDestEmptyDir = false;
+            var folderBrowserDialog = new FolderBrowserDialog
+            {
+                SelectedPath = Program.WallpaperDir
+            };
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            {
+                if (string.Equals(folderBrowserDialog.SelectedPath, userSettings.Settings.WallpaperDir, StringComparison.OrdinalIgnoreCase))
+                {
+                    return;
+                }
+
+                try
+                {
+                    var parentDir = Directory.GetParent(folderBrowserDialog.SelectedPath).ToString();
+                    if (parentDir != null)
+                    {
+                        if (Directory.Exists(Path.Combine(parentDir, "wallpapers")) &&
+                            Directory.Exists(Path.Combine(parentDir, ".late", "data")))
+                        {
+                            var result = System.Windows.MessageBox.Show("Did you mean to select?\n" + parentDir +
+                                "\nBoth '.late' and 'wallpapers' folders are required by Late Cat!",
+                                Properties.Resources.TitlePleaseWait,
+                                MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes);
+                            switch (result)
+                            {
+                                case MessageBoxResult.Yes:
+                                    folderBrowserDialog.SelectedPath = parentDir;
+                                    break;
+                                case MessageBoxResult.No:
+                                    break;
+                            }
+                        }
+                    }
+
+                    WallpapeDirectoryChanging = true;
+                    WallpaperDirectoryChangeCommand.RaiseCanExecuteChanged();
+
+                    Directory.CreateDirectory(folderBrowserDialog.SelectedPath);
+
+                    if (userSettings.Settings.WallpaperDirMoveExistingWallpaperNewDir)
+                    {
+                        await Task.Run(() =>
+                        {
+                            FileOperations.DirectoryCopy(Program.WallpaperDir, folderBrowserDialog.SelectedPath, true);
+                        });
+                    }
+                    else
+                    {
+                        isDestEmptyDir = true;
+                    }
+                }
+                catch (Exception e)
+                {
+                    System.Windows.MessageBox.Show("Failed to write to new directory:\n" + e.Message, Properties.Resources.TextError);
+                    return;
+                }
+                finally
+                {
+                    WallpapeDirectoryChanging = false;
+                    WallpaperDirectoryChangeCommand.RaiseCanExecuteChanged();
+                }
+
+                desktopCore.CloseAllWallpapers(true);
+
+                var previousDirectory = userSettings.Settings.WallpaperDir;
+                userSettings.Settings.WallpaperDir = folderBrowserDialog.SelectedPath;
+                UpdateConfigFile();
+                WallpaperDirectory = userSettings.Settings.WallpaperDir;
+                Program.WallpaperDir = userSettings.Settings.WallpaperDir;
+                WallpaperDirChange?.Invoke(null, folderBrowserDialog.SelectedPath);
+
+                if (!isDestEmptyDir)
+                {
+                    var result1 = await FileOperations.DeleteDirectoryAsync(previousDirectory, 1000, 3000);
+                    if (!result1)
+                    {
+                        System.Windows.MessageBox.Show("Failed to delete old wallpaper directory!\nTry deleting it manually.", Properties.Resources.TextError);
+                    }
+                }
+                folderBrowserDialog.Dispose();
+            }
+        }
+
+        #endregion //helper fns
+    }
+}
