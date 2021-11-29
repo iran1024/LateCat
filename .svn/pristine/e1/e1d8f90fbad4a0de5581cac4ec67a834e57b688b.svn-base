@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "LateCat.CefPlayer": {
-      "commandName": "Project",
-      "commandLineArgs": " --url \"C:\\Users\\appeon\\AppData\\Local\\Lively Wallpaper\\Library\\wallpapers\\0wj1biqk.f41\\fluid.html\" --display \"LateCat.PoseidonEngine.Core.PoseidonMonitor\" --property \"\" --volume 75 --geometry 2560x1440   --type local "
-    }
-  }
-}
