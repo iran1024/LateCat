@@ -52,9 +52,9 @@ namespace LateCat.PoseidonEngine.Core
             return hShellViewWin;
         }
 
-        public static void RefreshDesktop()
+        public static void RefreshDesktop(string originalDeskwallpaper = "")
         {
-            _ = Win32.SystemParametersInfo(Win32.SPI_SETDESKWALLPAPER, 0, string.Empty, Win32.SPIF_UPDATEINIFILE);
+            _ = Win32.SystemParametersInfo(Win32.SPI_SETDESKWALLPAPER, 0, originalDeskwallpaper, Win32.SPIF_SENDWININICHANGE);
         }
     }
 }

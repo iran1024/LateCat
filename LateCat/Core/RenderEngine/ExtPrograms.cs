@@ -159,7 +159,7 @@ namespace LateCat.Core
         private void Proc_Exited(object sender, EventArgs e)
         {
             _process?.Dispose();
-            DesktopUtil.RefreshDesktop();
+            DesktopUtil.RefreshDesktop(Program.OriginalDesktopWallpaperPath);
         }
 
         #region process task
@@ -307,7 +307,7 @@ namespace LateCat.Core
                 _process.Kill();
             }
             catch { }
-            DesktopUtil.RefreshDesktop();
+            DesktopUtil.RefreshDesktop(Program.OriginalDesktopWallpaperPath);
         }
 
         public void SetVolume(int volume)

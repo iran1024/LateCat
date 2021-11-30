@@ -367,7 +367,7 @@ namespace LateCat.Core
         {
             _process.OutputDataReceived -= Proc_OutputDataReceived;
             _process?.Dispose();
-            DesktopUtil.RefreshDesktop();
+            DesktopUtil.RefreshDesktop(Program.OriginalDesktopWallpaperPath);
         }
 
         #region process task
@@ -474,7 +474,8 @@ namespace LateCat.Core
                 _process.Kill();
             }
             catch { }
-            DesktopUtil.RefreshDesktop();
+
+            DesktopUtil.RefreshDesktop(Program.OriginalDesktopWallpaperPath);
         }
 
         public void SendMessage(string msg)

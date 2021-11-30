@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 
 namespace LateCat.Helpers
 {
@@ -19,20 +20,13 @@ namespace LateCat.Helpers
             var width = bmp.Width;
             var height = bmp.Height;
 
-            unsafe
+            for (int y = 0; y < height; y++)
             {
-                var p = (byte*)(void*)scan0;
-
-                for (int y = 0; y < height; y++)
+                for (int x = 0; x < width; x++)
                 {
-                    for (int x = 0; x < width; x++)
+                    for (int rgbIdx = 0; rgbIdx < 3; rgbIdx++)
                     {
-                        for (int delta = 0; delta < 3; delta++)
-                        {
-                            var idx = (y * stride) + x * 4 + delta;
-
-                            totals[delta] += p[idx];
-                        }
+                        totals[rgbIdx] += Marshal.ReadByte(scan0 + (y * stride) + x * 4 + rgbIdx);
                     }
                 }
             }
@@ -42,11 +36,7 @@ namespace LateCat.Helpers
 
             var pix = width * height;
 
-            var r = (int)totals[2] / pix;
-            var g = (int)totals[1] / pix;
-            var b = (int)totals[0] / pix;
-
-            return Color.FromArgb(r, g, b);
+            return Color.FromArgb((int)totals[2] / pix, (int)totals[1] / pix, (int)totals[0] / pix);
         }
     }
 }

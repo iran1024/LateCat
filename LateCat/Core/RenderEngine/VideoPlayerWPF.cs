@@ -78,7 +78,7 @@ namespace LateCat.Core
 
         private void Player_Closed(object sender, EventArgs e)
         {
-            DesktopUtil.RefreshDesktop();
+            DesktopUtil.RefreshDesktop(Program.OriginalDesktopWallpaperPath);
         }
 
         public void SendMessage(string msg)

@@ -26,7 +26,7 @@ namespace LateCat.Core
         private readonly static IDictionary<string, string> _incompatiblePrograms = new Dictionary<string, string>()
         {
             {"TranslucentTB", "344635E9-9AE4-4E60-B128-D53E25AB70A7"},
-            {"TaskbarX", null}
+            {"TaskbarX", string.Empty}
         };
 
         public TaskbarOperator()
@@ -99,7 +99,7 @@ namespace LateCat.Core
             Start(_taskbarTheme);
         }
 
-        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        private void Timer_Elapsed(object? sender, ElapsedEventArgs e)
         {
             SetTaskbarTransparent(_taskbarTheme);
         }
@@ -129,7 +129,7 @@ namespace LateCat.Core
 
                     foreach (var taskbar in taskbars)
                     {
-                        SetWindowCompositionAttribute(taskbar, ref data);
+                        _ = SetWindowCompositionAttribute(taskbar, ref data);
                     }
                 }
                 catch
@@ -138,8 +138,6 @@ namespace LateCat.Core
                 }
                 finally
                 {
-                    //not required for this structure..
-                    //Marshal.DestroyStructure(accentPtr, typeof(AccentPolicy));
                     Marshal.FreeHGlobal(accentPtr);
                 }
             }
@@ -154,18 +152,9 @@ namespace LateCat.Core
                     Stop();
                 }
 
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
                 _disposed = true;
             }
         }
-
-        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~TransparentTbService()
-        // {
-        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        //     Dispose(disposing: false);
-        // }
 
         public void Dispose()
         {
@@ -176,16 +165,16 @@ namespace LateCat.Core
 
         #region helpers
 
-        private List<IntPtr> GetTaskbars()
+        private static List<IntPtr> GetTaskbars()
         {
             IntPtr taskbar;
             var taskbars = new List<IntPtr>(2);
-            //main taskbar..
+
             if ((taskbar = Win32.FindWindow("Shell_TrayWnd", null)) != IntPtr.Zero)
             {
                 taskbars.Add(taskbar);
             }
-            //secondary taskbar(s)..
+
             if ((taskbar = Win32.FindWindow("Shell_SecondaryTrayWnd", null)) != IntPtr.Zero)
             {
                 taskbars.Add(taskbar);
@@ -201,7 +190,7 @@ namespace LateCat.Core
         {
             foreach (var taskbar in GetTaskbars())
             {
-                Win32.SendMessage(taskbar, (int)Win32.WM.DWMCOMPOSITIONCHANGED, IntPtr.Zero, IntPtr.Zero);
+                _ = Win32.SendMessage(taskbar, (int)Win32.WM.DWMCOMPOSITIONCHANGED, IntPtr.Zero, IntPtr.Zero);
             }
         }
 
@@ -226,7 +215,7 @@ namespace LateCat.Core
                             mutex?.Dispose();
                         }
                     }
-                    catch { } //skipping
+                    catch { }
                 }
                 else
                 {

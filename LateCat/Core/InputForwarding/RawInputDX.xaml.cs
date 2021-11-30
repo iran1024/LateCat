@@ -75,8 +75,7 @@ namespace LateCat.Core
                 case InputForwardMode.Off:
                     Close();
                     break;
-                case InputForwardMode.Mouse:
-                    //ExInputSink flag makes it work even when not in foreground, similar to global hook.. but asynchronous, no complications and no AV false detection!
+                case InputForwardMode.Mouse:                    
                     RawInputDevice.RegisterDevice(HidUsageAndPage.Mouse,
                         RawInputDeviceFlags.ExInputSink, hwnd);
                     break;

@@ -75,7 +75,7 @@ namespace LateCat.Core
 
             _notifyIcon.ContextMenuStrip.Items.Add(Properties.Resources.TextOpenLateCat, Properties.Icons.home).Click += (s, e) => Program.ShowMainWindow();
 
-            _notifyIcon.ContextMenuStrip.Items.Add(Properties.Resources.TextCloseWallpapers, null).Click += (s, e) => _desktopCore.CloseAllWallpapers();
+            _notifyIcon.ContextMenuStrip.Items.Add(Properties.Resources.TextCloseWallpapers, null).Click += (s, e) => _desktopCore.CloseAllWallpapers(true);
 
             _pauseWallpaperBtn = new ToolStripMenuItem(Properties.Resources.TextPauseWallpapers, Properties.Icons.pause);
             _pauseWallpaperBtn.Click += (s, e) => ToggleWallpaperPlaybackState(s, e);

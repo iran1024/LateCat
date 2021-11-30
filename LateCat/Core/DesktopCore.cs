@@ -183,7 +183,7 @@ namespace LateCat.Core
                         case WallpaperProcessStatus.MultiImport:
                         case WallpaperProcessStatus.Edit:
 
-                            var type = wallpaper.Metadata.Status;                            
+                            var type = wallpaper.Metadata.Status;
 
                             var tcs = new TaskCompletionSource<object>();
                             var thread = new Thread(() =>
@@ -239,7 +239,7 @@ namespace LateCat.Core
                             if (!File.Exists(Path.Combine(wallpaper.Metadata.InfoFolderPath, "WallpaperInfo.json")))
                             {
                                 wallpaper.Terminate();
-                                DesktopUtil.RefreshDesktop();
+                                DesktopUtil.RefreshDesktop(Program.OriginalDesktopWallpaperPath);
                                 await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new ThreadStart(delegate
                                 {
                                     App.Services.GetRequiredService<WallpaperListViewModel>().WallpaperDelete(wallpaper.Metadata);
@@ -344,7 +344,7 @@ namespace LateCat.Core
                             {
                                 throw new FileNotFoundException();
                             }
-                            
+
                             try
                             {
                                 var color = await Task.Run(() => _taskbarOperator.GetAverageColor(imgPath));
@@ -354,7 +354,7 @@ namespace LateCat.Core
                             {
 
                             }
-                            
+
                             if (_settings.Settings.DesktopAutoWallpaper)
                             {
                                 if (MonitorHelper.IsMultiMonitor())
@@ -430,7 +430,7 @@ namespace LateCat.Core
         {
             var prct = new Win32.RECT();
 
-            if (!Win32.SetWindowPos(handle, 1, targetDisplay.Bounds.X, targetDisplay.Bounds.Y, (targetDisplay.Bounds.Width), (targetDisplay.Bounds.Height), 0x0010))
+            if (!Win32.SetWindowPos(handle, 1, targetDisplay.Bounds.X, targetDisplay.Bounds.Y, targetDisplay.Bounds.Width, targetDisplay.Bounds.Height, 0x0010))
             {
 
             }
@@ -439,12 +439,12 @@ namespace LateCat.Core
 
             SetParentWorkerW(handle);
 
-            if (!Win32.SetWindowPos(handle, 1, prct.Left, prct.Top, (targetDisplay.Bounds.Width), (targetDisplay.Bounds.Height), 0x0010))
+            if (!Win32.SetWindowPos(handle, 1, prct.Left, prct.Top, targetDisplay.Bounds.Width, targetDisplay.Bounds.Height, 0x0010))
             {
 
             }
 
-            DesktopUtil.RefreshDesktop();
+            DesktopUtil.RefreshDesktop(Program.OriginalDesktopWallpaperPath);
         }
 
         private void SetWallpaperSpanMonitor(IntPtr handle)
@@ -457,7 +457,7 @@ namespace LateCat.Core
 
             }
 
-            DesktopUtil.RefreshDesktop();
+            DesktopUtil.RefreshDesktop(Program.OriginalDesktopWallpaperPath);
         }
 
         private void SetWallpaperDuplicateMonitor(IWallpaper wallpaper)
@@ -494,9 +494,6 @@ namespace LateCat.Core
             }
         }
 
-        /// <summary>
-        /// Reset workerw.
-        /// </summary>
         public void ResetWallpaper()
         {
             _isInitialized = false;
@@ -781,17 +778,34 @@ namespace LateCat.Core
             }));
         }
 
-        /// <summary>
-        /// Restore wallpaper from save.
-        /// </summary>
         public void RestoreWallpaper()
         {
             _ = RestoreWallpaperFromLayout(Constants.Paths.LayoutPath);
         }
 
+        public void RestoreDeskWallpaper()
+        {
+            CloseAllWallpapersAndRestoreDeskWallpaper();
+        }
+
         public void CloseAllWallpapers(bool terminate = false)
         {
             CloseAllWallpapers(true, terminate);
+        }
+
+        private void CloseAllWallpapersAndRestoreDeskWallpaper()
+        {
+            if (Wallpapers.Count > 0)
+            {
+                _wallpapers.ForEach(x => x.Terminate());
+
+                _wallpapers.Clear();
+                _watchDog.Clear();
+            }
+            else
+            {
+                DesktopUtil.RefreshDesktop(Program.OriginalDesktopWallpaperPath);
+            }
         }
 
         private void CloseAllWallpapers(bool fireEvent, bool terminate)
@@ -966,7 +980,7 @@ namespace LateCat.Core
                         try
                         {
                             CloseAllWallpapers(false, true);
-                            DesktopUtil.RefreshDesktop();
+                            DesktopUtil.RefreshDesktop(Program.OriginalDesktopWallpaperPath);
                         }
                         catch (Exception e)
                         {

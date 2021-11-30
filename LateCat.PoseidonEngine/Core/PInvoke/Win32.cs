@@ -1516,8 +1516,10 @@ namespace LateCat.PoseidonEngine.Core
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         [return: MarshalAs(UnmanagedType.I4)]
-        public static extern Int32 SystemParametersInfo(UInt32 uiAction, UInt32 uiParam, String pvParam, UInt32 fWinIni);
+        public static extern int SystemParametersInfo(uint uiAction, uint uiParam, string pvParam, uint fWinIni);
 
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        public static extern int SystemParametersInfo(uint uAction, uint uParam, StringBuilder lpvParam, uint fuWinIni);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern bool SystemParametersInfo(
@@ -1530,10 +1532,11 @@ namespace LateCat.PoseidonEngine.Core
      int flags);
 
 
-        public static UInt32 SPIF_SENDWININICHANGE = 0x02;
-        public static UInt32 SPI_SETDESKWALLPAPER = 20;
-        public static UInt32 SPIF_UPDATEINIFILE = 0x1;
-        public static UInt32 SPI_SETCLIENTAREAANIMATION = 0x1043;
+        public const uint SPIF_SENDWININICHANGE = 0x0002;
+        public const uint SPI_SETDESKWALLPAPER = 0x0014;
+        public const uint SPIF_UPDATEINIFILE = 0x0001;
+        public const int SPI_GETDESKWALLPAPER = 0x0073;
+        public static uint SPI_SETCLIENTAREAANIMATION = 0x1043;
 
         #endregion SetupDesktop.cs
 
