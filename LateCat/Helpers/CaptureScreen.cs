@@ -1,11 +1,8 @@
-﻿using ImageMagick;
-using LateCat.PoseidonEngine.Core;
+﻿using LateCat.PoseidonEngine.Core;
 using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace LateCat.Helpers
 {
@@ -68,80 +65,5 @@ namespace LateCat.Helpers
             }
             return result;
         }
-
-        public static async Task CaptureGif(string savePath, int x, int y, int width, int height,
-            int captureDelay, int animeDelay, int totalFrames, IProgress<int> progress)
-        {
-            await Task.Run(async () =>
-            {
-                var miArray = new MagickImage[totalFrames];
-                try
-                {
-                    for (int i = 0; i < totalFrames; i++)
-                    {
-                        using (var bmp = CopyScreen(x, y, width, height))
-                        {
-                            miArray[i] = ToMagickImage(bmp);
-                        }
-                        await Task.Delay(captureDelay);
-                        progress.Report((i + 1) * 100 / totalFrames);
-                    }
-
-                    using MagickImageCollection collection = new MagickImageCollection();
-                    for (int i = 0; i < totalFrames; i++)
-                    {
-                        collection.Add(miArray[i]);
-                        collection[i].AnimationDelay = animeDelay;
-                    }
-
-                    var settings = new QuantizeSettings
-                    {
-                        Colors = 256,
-                    };
-                    collection.Quantize(settings);
-
-                    collection.Optimize();
-
-                    collection.Write(savePath);
-                }
-                finally
-                {
-                    for (int i = 0; i < totalFrames; i++)
-                    {
-                        miArray[i]?.Dispose();
-                    }
-                }
-            });
-        }
-
-        #region helpers
-
-        public static MagickImage ToMagickImage(Bitmap bmp)
-        {
-            var mi = new MagickImage();
-            using (var ms = new MemoryStream())
-            {
-                bmp.Save(ms, ImageFormat.Bmp);
-                ms.Position = 0;
-                mi.Read(ms);
-            }
-            return mi;
-        }
-
-        public static void ResizeAnimatedGif(string srcFile, string destFile, int width, int height)
-        {
-            using var collection = new MagickImageCollection(srcFile);
-
-            collection.Coalesce();
-
-            foreach (var image in collection)
-            {
-                image.Resize(width, height);
-            }
-
-            collection.Write(destFile);
-        }
-
-        #endregion //helpers
     }
 }

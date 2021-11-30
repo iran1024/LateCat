@@ -8,15 +8,22 @@
 	<Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
-  <ItemGroup>    
-    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="8.4.0" />
+  <ItemGroup>
     <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.1" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1020.30" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1020.30">
+      <TreatAsUsed>true</TreatAsUsed>
+    </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="RawInput.Sharp" Version="0.0.4" />
+    <PackageReference Include="RawInput.Sharp" Version="0.0.4">
+      <TreatAsUsed>true</TreatAsUsed>
+    </PackageReference>
     <PackageReference Include="System.Management" Version="6.0.0" />
-	<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-	<PackageReference Include="WindowsContracts.Net.ApplicationModel.StartupTaskContract" Version="5.19041.4" />
+	<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0">
+	  <TreatAsUsed>true</TreatAsUsed>
+	</PackageReference>
+	<PackageReference Include="WindowsContracts.Net.ApplicationModel.StartupTaskContract" Version="5.19041.4">
+	  <TreatAsUsed>true</TreatAsUsed>
+	</PackageReference>
   </ItemGroup>
 
 </Project>

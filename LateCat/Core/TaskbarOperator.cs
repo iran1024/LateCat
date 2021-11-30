@@ -1,10 +1,11 @@
-﻿using ImageMagick;
+﻿using LateCat.Helpers;
 using LateCat.PoseidonEngine.Abstractions;
 using LateCat.PoseidonEngine.Core;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Timers;
@@ -66,7 +67,6 @@ namespace LateCat.Core
             switch (_taskbarTheme)
             {
                 case TaskbarTheme.None:
-                    //accent.AccentState = AccentState.ACCENT_DISABLED;
                     break;
                 case TaskbarTheme.Clear:
                     _accentPolicyRegular.GradientColor = 16777215;
@@ -77,7 +77,6 @@ namespace LateCat.Core
                     _accentPolicyRegular.AccentState = AccentState.ACCENT_ENABLE_BLURBEHIND;
                     break;
                 case TaskbarTheme.Color:
-                    //todo
                     break;
                 case TaskbarTheme.Fluent:
                     _accentPolicyRegular.GradientColor = 167772160;
@@ -245,24 +244,23 @@ namespace LateCat.Core
             return null;
         }
 
-        /// <summary>
-        /// Quickly computes the average color of image file.
-        /// </summary>
-        /// <param name="imgPath">Image file path.</param>
-        /// <returns></returns>
         public Color GetAverageColor(string imgPath)
         {
-            //avg of colors by resizing to 1x1..
-            using var image = new MagickImage(imgPath);
-            //same as resize with box filter, Sample(1,1) was unreliable although faster..
-            image.Scale(1, 1);
+            using var originalBmp = new Bitmap(imgPath);
 
-            //take the new pixel..
-            using var pixels = image.GetPixels();
-            var color = pixels.GetPixel(0, 0).ToColor();
+            var targetWidth = originalBmp.Width;
+            var targetHeight = 75;
 
-            //ImageMagick color range is 0 - 65535.
-            return Color.FromArgb(255 * color.R / 65535, 255 * color.G / 65535, 255 * color.B / 65535);
+            using var cutBmp = new Bitmap(targetWidth, targetHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            var g = Graphics.FromImage(cutBmp);
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            g.DrawImage(originalBmp, new Rectangle(0, 0, targetWidth, targetHeight), new Rectangle(0, originalBmp.Height - targetHeight, targetWidth, targetHeight), GraphicsUnit.Pixel);
+            g.Dispose();
+
+            var avgColor = AverageColorCalculator.Analyze(cutBmp);
+
+            return Color.FromArgb(avgColor.R, avgColor.G, avgColor.B);
         }
 
         #endregion //helpers

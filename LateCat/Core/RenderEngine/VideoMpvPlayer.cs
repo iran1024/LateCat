@@ -1,5 +1,4 @@
-﻿using ImageMagick;
-using LateCat.Core.Cef;
+﻿using LateCat.Core.Cef;
 using LateCat.Helpers;
 using LateCat.PoseidonEngine;
 using LateCat.PoseidonEngine.Abstractions;
@@ -10,6 +9,8 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -203,13 +204,14 @@ namespace LateCat.Core
             {
                 await Task.Run(() =>
                 {
-                    using var image = new MagickImage(Metadata.FilePath);
-                    if (image.Width < 1920)
+                    if (OperatingSystem.IsWindowsVersionAtLeast(7))
                     {
-                        image.FilterType = FilterType.Point;
-                        image.Thumbnail(new Percentage(100 * 1920 / image.Width));
+                        using var img = Image.FromFile(Metadata.FilePath);
+
+                        img.SelectActiveFrame(new FrameDimension(img.FrameDimensionsList[0]), 0);
+
+                        img.Save(Path.GetExtension(filePath) != ".jpg" ? filePath + ".jpg" : filePath, ImageFormat.Jpeg);
                     }
-                    image.Write(Path.GetExtension(filePath) != ".jpg" ? filePath + ".jpg" : filePath);
                 });
             }
             else

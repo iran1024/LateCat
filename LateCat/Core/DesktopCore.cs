@@ -316,11 +316,10 @@ namespace LateCat.Core
                         _watchDog.Add(wallpaper.Proc.Id);
                     }
 
-                    var thumbRequiredLockMonitor = (!MonitorHelper.IsMultiMonitor() || _settings.Settings.WallpaperArrangement == WallpaperArrangement.Span || MonitorHelper.Compare(wallpaper.Monitor, MonitorHelper.GetPrimaryMonitor(), MonitorIdentificationMode.DeviceId));
                     var thumbRequiredAvgColor = (_settings.Settings.SystemTaskbarTheme == TaskbarTheme.Wallpaper || _settings.Settings.SystemTaskbarTheme == TaskbarTheme.WallpaperFluent) &&
                         (!MonitorHelper.IsMultiMonitor() || _settings.Settings.WallpaperArrangement == WallpaperArrangement.Span || MonitorHelper.Compare(wallpaper.Monitor, MonitorHelper.GetPrimaryMonitor(), MonitorIdentificationMode.DeviceId));
 
-                    if (_settings.Settings.DesktopAutoWallpaper || thumbRequiredAvgColor || thumbRequiredLockMonitor)
+                    if (_settings.Settings.DesktopAutoWallpaper || thumbRequiredAvgColor)
                     {
                         try
                         {
@@ -345,20 +344,17 @@ namespace LateCat.Core
                             {
                                 throw new FileNotFoundException();
                             }
-
-                            if (thumbRequiredAvgColor)
+                            
+                            try
                             {
-                                try
-                                {
-                                    var color = await Task.Run(() => _taskbarOperator.GetAverageColor(imgPath));
-                                    _taskbarOperator.SetAccentColor(color);
-                                }
-                                catch
-                                {
-
-                                }
+                                var color = await Task.Run(() => _taskbarOperator.GetAverageColor(imgPath));
+                                _taskbarOperator.SetAccentColor(color);
                             }
+                            catch
+                            {
 
+                            }
+                            
                             if (_settings.Settings.DesktopAutoWallpaper)
                             {
                                 if (MonitorHelper.IsMultiMonitor())
@@ -387,11 +383,6 @@ namespace LateCat.Core
                                 {
                                     _ = Win32.SystemParametersInfo(Win32.SPI_SETDESKWALLPAPER, 0, imgPath, Win32.SPIF_UPDATEINIFILE | Win32.SPIF_SENDWININICHANGE);
                                 }
-                            }
-
-                            if (thumbRequiredLockMonitor)
-                            {
-                                
                             }
                         }
                         catch

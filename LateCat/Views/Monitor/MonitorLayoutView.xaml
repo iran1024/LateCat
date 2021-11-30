@@ -8,7 +8,7 @@
         xmlns:local="clr-namespace:LateCat.Views"        
         xmlns:p = "clr-namespace:LateCat.Properties"       
         mc:Ignorable="d" 
-        WindowStyle="SingleBorderWindow"        
+        ResizeMode="NoResize"       
         Title="{x:Static p:Resources.TitleMonitorLayout}" 
         Height="550" Width="550"    
         Closing="Window_Closing">
