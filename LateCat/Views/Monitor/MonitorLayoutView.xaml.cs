@@ -8,20 +8,18 @@ using System.Windows.Input;
 
 namespace LateCat.Views
 {
-    /// <summary>
-    /// Interaction logic for MonitorLayoutView.xaml
-    /// </summary>
     public partial class MonitorLayoutView : Window
     {
         private readonly List<MonitorLabelView> _monitorLabels = new();
+        private readonly MonitorLayoutViewModel _monitorVm;
 
         public MonitorLayoutView()
         {
             InitializeComponent();
-            var vm = App.Services.GetRequiredService<MonitorLayoutViewModel>();
+            _monitorVm = App.Services.GetRequiredService<MonitorLayoutViewModel>();
 
-            DataContext = vm;
-            Closing += vm.OnWindowClosing;
+            DataContext = _monitorVm;
+            Closing += _monitorVm.OnWindowClosing;
             CreateLabelWindows();
 
             MonitorHelper.MonitorUpdated += MonitorHelper_MonitorUpdated;
@@ -32,8 +30,8 @@ namespace LateCat.Views
 
         }
 
-        private void MonitorHelper_MonitorUpdated(object sender, EventArgs e)
-        {            
+        private void MonitorHelper_MonitorUpdated(object? sender, EventArgs e)
+        {
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 CloseLabelWindows();

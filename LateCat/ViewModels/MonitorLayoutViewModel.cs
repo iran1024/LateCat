@@ -28,7 +28,7 @@ namespace LateCat.ViewModels
             desktopCore.WallpaperChanged += SetupDesktop_WallpaperChanged;
         }
 
-        private void SetupDesktop_WallpaperChanged(object sender, EventArgs e)
+        private void SetupDesktop_WallpaperChanged(object? sender, EventArgs e)
         {
             System.Windows.Application.Current.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
                 new System.Threading.ThreadStart(delegate
@@ -68,7 +68,7 @@ namespace LateCat.ViewModels
                         _settings.Settings.SelectedMonitor = value.Monitor;
                         _settings.SaveSettings();
 
-                        _wallpaperListVm.SetupDesktop_WallpaperChanged(null, null);
+                        _wallpaperListVm.SetupDesktop_WallpaperChanged(_wallpaperListVm.CurrentItem, null);
                     }
                 }
             }
@@ -205,7 +205,7 @@ namespace LateCat.ViewModels
 
         #region helpers
 
-        public void OnWindowClosing(object sender, CancelEventArgs e)
+        public void OnWindowClosing(object? sender, CancelEventArgs e)
         {
             _desktopCore.WallpaperChanged -= SetupDesktop_WallpaperChanged;
         }

@@ -400,6 +400,11 @@ namespace LateCat.ViewModels
             Application.Current.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
             new System.Threading.ThreadStart(delegate
             {
+                if (sender is IWallpaperMetadata metadata)
+                {                    
+                    _desktopCore.SetWallpaper(metadata, _settings.Settings.SelectedMonitor);
+                }
+
                 //CurrentItem = _settings.Settings.WallpaperArrangement == WallpaperArrangement.Span && _desktopCore.Wallpapers.Count > 0 ?
                 //    _desktopCore.Wallpapers[0].Metadata :
                 //    _desktopCore.Wallpapers.FirstOrDefault(wp => _settings.Settings.SelectedMonitor.Equals(wp.Monitor))?.Metadata;

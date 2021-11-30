@@ -59,7 +59,7 @@ namespace LateCat.Core
             _desktopCore = desktopCore;
 
             InitializeComponent();
-            //Starting a hidden window outside Monitor region, rawinput receives msg through WndProc
+
             WindowStartupLocation = WindowStartupLocation.Manual;
             Left = -99999;
             InputMode = InputForwardMode.MouseKeyboard;
@@ -114,22 +114,13 @@ namespace LateCat.Core
 
         protected IntPtr Hook(IntPtr hwnd, int msg, IntPtr wparam, IntPtr lparam, ref bool handled)
         {
-            // You can read inputs by processing the WM_INPUT message.
             if (msg == (int)Win32.WM.INPUT)
             {
-                // Create an RawInputData from the handle stored in lParam.
                 var data = RawInputData.FromHandle(lparam);
 
-                //You can identify the source device using Header.DeviceHandle or just Device.
-                //var sourceDeviceHandle = data.Header.DeviceHandle;
-                //var sourceDevice = data.Device;
-
-                // The data will be an instance of either RawInputMouseData, RawInputKeyboardData, or RawInputHidData.
-                // They contain the raw input data in their properties.
                 switch (data)
                 {
                     case RawInputMouseData mouse:
-                        //RawInput only gives relative mouse movement value.. cheating here with Winform library.
                         var M = System.Windows.Forms.Control.MousePosition;
                         switch (mouse.Mouse.Buttons)
                         {
@@ -142,13 +133,9 @@ namespace LateCat.Core
                                 MouseUpRaw?.Invoke(this, new MouseClickRawArgs(M.X, M.Y, RawInputMouseBtn.left));
                                 break;
                             case Linearstar.Windows.RawInput.Native.RawMouseButtonFlags.RightButtonDown:
-                                //issue: click being skipped; desktop already has its own rightclick contextmenu.
-                                //ForwardMessage(M.X, M.Y, (int)Win32.WM.RBUTTONDOWN, (IntPtr)0x0002);
                                 MouseDownRaw?.Invoke(this, new MouseClickRawArgs(M.X, M.Y, RawInputMouseBtn.right));
                                 break;
                             case Linearstar.Windows.RawInput.Native.RawMouseButtonFlags.RightButtonUp:
-                                //issue: click being skipped; desktop already has its own rightclick contextmenu.
-                                //ForwardMessage(M.X, M.Y, (int)Win32.WM.RBUTTONUP, (IntPtr)0x0002);
                                 MouseUpRaw?.Invoke(this, new MouseClickRawArgs(M.X, M.Y, RawInputMouseBtn.right));
                                 break;
                             case Linearstar.Windows.RawInput.Native.RawMouseButtonFlags.None:
@@ -156,31 +143,6 @@ namespace LateCat.Core
                                 MouseMoveRaw?.Invoke(this, new MouseRawArgs(M.X, M.Y));
                                 break;
                             case Linearstar.Windows.RawInput.Native.RawMouseButtonFlags.MouseWheel:
-                                //Disabled, not tested yet.
-                                /*
-                                https://github.com/ivarboms/game-engine/blob/master/Input/RawInput.cpp
-                                Mouse wheel deltas are represented as multiples of 120.
-                                MSDN: The delta was set to 120 to allow Microsoft or other vendors to build
-                                finer-resolution wheels (a freely-rotating wheel with no notches) to send more
-                                messages per rotation, but with a smaller value in each message.
-                                Because of this, the value is converted to a float in case a mouse's wheel
-                                reports a value other than 120, in which case dividing by 120 would produce
-                                a very incorrect value.
-                                More info: http://social.msdn.microsoft.com/forums/en-US/gametechnologiesgeneral/thread/1deb5f7e-95ee-40ac-84db-58d636f601c7/
-                                */
-
-                                /*
-                                // One wheel notch is represented as this delta (WHEEL_DELTA).
-                                const float oneNotch = 120;
-
-                                // Mouse wheel delta in multiples of WHEEL_DELTA (120).
-                                float mouseWheelDelta = mouse.Mouse.RawButtons;
-
-                                // Convert each notch from [-120, 120] to [-1, 1].
-                                mouseWheelDelta = mouseWheelDelta / oneNotch;
-
-                                MouseScrollSimulate(mouseWheelDelta);
-                                */
                                 break;
                         }
                         break;
@@ -195,22 +157,12 @@ namespace LateCat.Core
             return IntPtr.Zero;
         }
 
-        /// <summary>
-        /// Forwards the keyboard message to the required wallpaper window based on given cursor location.<br/>
-        /// Skips if desktop is not focused.
-        /// </summary>
-        /// <param name="msg">key press msg.</param>
-        /// <param name="wParam">Virtual-Key code.</param>
-        /// <param name="scanCode">OEM code of the key.</param>
-        /// <param name="isPressed">Key is pressed.</param>
         private void ForwardMessageKeyboard(int msg, IntPtr wParam, int scanCode, bool isPressed)
         {
             try
             {
-                //Don't forward when not on desktop.
                 if (_settings.Settings.InputForward == InputForwardMode.MouseKeyboard && IsDesktop())
                 {
-                    //Detect active wp based on cursor pos, better way to do this?
                     var monitor = new PoseidonMonitor(MonitorManager.Instance.GetMonitorFromPoint(new Point(
                         System.Windows.Forms.Control.MousePosition.X, System.Windows.Forms.Control.MousePosition.Y)));
 
@@ -235,18 +187,10 @@ namespace LateCat.Core
             }
             catch
             {
-                //Logger.Error("Keyboard Forwarding Error:" + e.Message);
+
             }
         }
 
-        /// <summary>
-        /// Forwards the mouse message to the required wallpaper window based on given cursor location.<br/>
-        /// Skips if apps are in foreground.
-        /// </summary>
-        /// <param name="x">Cursor pos x</param>
-        /// <param name="y">Cursor pos y</param>
-        /// <param name="msg">mouse message</param>
-        /// <param name="wParam">additional msg parameter</param>
         private void ForwardMessageMouse(int x, int y, int msg, IntPtr wParam)
         {
             if (_settings.Settings.InputForward == InputForwardMode.Off)
@@ -273,7 +217,7 @@ namespace LateCat.Core
                         if (MonitorHelper.Compare(monitor, wallpaper.Monitor, MonitorIdentificationMode.DeviceId) ||
                             _settings.Settings.WallpaperArrangement == WallpaperArrangement.Span)
                         {
-                            uint lParam = Convert.ToUInt32(mouse.Y);
+                            var lParam = Convert.ToUInt32(mouse.Y);
                             lParam <<= 16;
                             lParam |= Convert.ToUInt32(mouse.X);
                             Win32.PostMessageW(wallpaper.InputHandle, msg, wParam, (UIntPtr)lParam);
@@ -283,7 +227,7 @@ namespace LateCat.Core
             }
             catch
             {
-                //Logger.Error("Mouse Forwarding Error:" + e.Message);
+
             }
         }
 
@@ -291,7 +235,7 @@ namespace LateCat.Core
 
         #region helpers
 
-        private Point CalculateMousePos(int x, int y, PoseidonMonitor monitor, WallpaperArrangement arrangement)
+        private static Point CalculateMousePos(int x, int y, PoseidonMonitor monitor, WallpaperArrangement arrangement)
         {
             if (MonitorHelper.IsMultiMonitor())
             {
@@ -301,7 +245,7 @@ namespace LateCat.Core
                     x -= MonitorArea.Location.X;
                     y -= MonitorArea.Location.Y;
                 }
-                else //per-display or duplicate mode.
+                else
                 {
                     x += -1 * monitor.Bounds.X;
                     y += -1 * monitor.Bounds.Y;
@@ -333,7 +277,7 @@ namespace LateCat.Core
         private bool IsDesktop()
         {
             IntPtr hWnd = Win32.GetForegroundWindow();
-            return (IntPtr.Equals(hWnd, _workerW) || IntPtr.Equals(hWnd, _progman));
+            return (Equals(hWnd, _workerW) || Equals(hWnd, _progman));
         }
 
         #endregion //helpers

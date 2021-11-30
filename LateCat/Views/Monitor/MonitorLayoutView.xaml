@@ -34,7 +34,7 @@
        
         <Grid Width="450" Height="300" Margin="0, 40, 0, 0">
             <ListView HorizontalAlignment="Center" VerticalAlignment="Center" ItemsSource="{Binding MonitorItems}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}" 
-                      ItemContainerStyle="{StaticResource ItemPadding}">
+                      ItemContainerStyle="{StaticResource ItemPadding}" >
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel/>
