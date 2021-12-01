@@ -84,7 +84,7 @@ namespace LateCat
         private static void App_Startup(object sender, StartupEventArgs e)
         {
             var sysTray = App.Services.GetRequiredService<ITrayIcon>();
-            sysTray.ShowBalloonNotification(5, "Welcome to tracking Late Cat", "Moooooo");
+            sysTray.ShowBalloonNotification(5, "欢迎追踪迷失的猫", "Mooooooooo");
         }
 
         #endregion //app entry
