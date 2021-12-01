@@ -23,6 +23,7 @@ namespace LateCat.ViewModels
 
         private readonly IDesktopCore _desktopCore;
         private readonly ISettingsService _settings;
+
         private int _index = 0;
 
         public WallpaperListViewModel(ISettingsService userSettings, IDesktopCore desktopCore)
@@ -41,25 +42,56 @@ namespace LateCat.ViewModels
 
             settingsVm.WallpaperDirChange += SettingsVM_WallpaperDirChange;
 
-            _currentItem = _items.FirstOrDefault() ?? Wallpaper.Default;
+            var defaultWallpaper = _items.FirstOrDefault();
+
+            if (defaultWallpaper is not null)
+            {
+                CurrentItem = defaultWallpaper;
+            }
+            else
+            {
+                CurrentItem = Wallpaper.CreateDefaultWallpaper();
+                _items.Add(CurrentItem);
+            }
         }
 
-        public void PreviousWallpaper()
+        public IWallpaperMetadata? PreviousWallpaper()
         {
             if (_index > 0)
             {
-                App.Services.GetRequiredService<MainWindow>().Loading.Visibility = Visibility.Visible;
-                CurrentItem = _items[--_index];
+                CrossThreadAccessor.RunAsync(() =>
+                    App.Services.GetRequiredService<MainWindow>().Loading.Visibility = Visibility.Visible);
+
+                return CurrentItem = _items[--_index];
             }
+
+            return null;
         }
 
-        public void NextWallpaper()
+        private void DisplayTargetWallpaper(int index)
+        {
+            if (index < 0)
+            {
+                return;
+            }
+
+            CrossThreadAccessor.RunAsync(() =>
+                    App.Services.GetRequiredService<MainWindow>().Loading.Visibility = Visibility.Visible);
+
+            CurrentItem = _items[index];
+        }
+
+        public IWallpaperMetadata? NextWallpaper()
         {
             if (_index < _items.Count - 1)
             {
-                App.Services.GetRequiredService<MainWindow>().Loading.Visibility = Visibility.Visible;
-                CurrentItem = _items[++_index];
+                CrossThreadAccessor.RunAsync(() =>
+                    App.Services.GetRequiredService<MainWindow>().Loading.Visibility = Visibility.Visible);
+
+                return CurrentItem = _items[++_index];
             }
+
+            return null;
         }
 
         public void SwitchWallpaper()
@@ -123,6 +155,17 @@ namespace LateCat.ViewModels
             }
         }
 
+        private Visibility _placeholder = Visibility.Collapsed;
+        public Visibility Placeholder
+        {
+            get => _placeholder;
+            set
+            {
+                _placeholder = value;
+                OnPropertyChanged();
+            }
+        }
+
         #endregion //collections
 
         #region wallpaper operations
@@ -143,29 +186,58 @@ namespace LateCat.ViewModels
             FileOperations.OpenFolder(folderPath);
         }
 
-        public async void WallpaperDelete(object obj)
+        public IWallpaperMetadata? GetWallpaper(string folder)
         {
-            var selection = (IWallpaperMetadata)obj;
+            return _items.FirstOrDefault(metadata => metadata.InfoFolderPath.Equals(folder, StringComparison.OrdinalIgnoreCase));
+        }
 
-            _desktopCore.CloseWallpaper(selection, true);
+        private void RebuildIndex(bool positive)
+        {
+            if (positive)
+            {
+                _index++;
+            }
+            else
+            {
+                _index--;
+            }
+        }
 
-            var success = await FileOperations.DeleteDirectoryAsync(selection.InfoFolderPath, 1000, 4000);
+        public async void WallpaperDelete(IWallpaperMetadata metadata)
+        {
+            var removeIndex = _items.IndexOf(metadata);
+
+            if (removeIndex <= _index)
+            {
+                RebuildIndex(false);
+            }
+
+            _desktopCore.CloseWallpaper(metadata, true);
+
+            var success = await FileOperations.DeleteDirectoryAsync(metadata.InfoFolderPath, 1000, 4000);
 
             if (success)
             {
-                if (CurrentItem == selection)
+                Items.Remove(metadata);
+
+                if (Items.Count == 0)
                 {
+                    Placeholder = Visibility.Visible;
                     CurrentItem = null;
                 }
 
-                Items.Remove(selection);
+                if (CurrentItem == metadata)
+                {
+                    DisplayTargetWallpaper(_index);
+                }
+
                 try
                 {
-                    if (string.IsNullOrEmpty(selection.InfoFolderPath))
+                    if (string.IsNullOrEmpty(metadata.InfoFolderPath))
                         return;
 
                     string[] wpdataDir = Directory.GetDirectories(Program.WallpaperDataDir);
-                    var wpFolderName = new DirectoryInfo(selection.InfoFolderPath).Name;
+                    var wpFolderName = new DirectoryInfo(metadata.InfoFolderPath).Name;
                     for (int i = 0; i < wpdataDir.Length; i++)
                     {
                         var item = new DirectoryInfo(wpdataDir[i]).Name;
@@ -177,9 +249,7 @@ namespace LateCat.ViewModels
                     }
                 }
                 catch
-                {
-
-                }
+                { }
             }
         }
 
@@ -222,7 +292,18 @@ namespace LateCat.ViewModels
 
                 var model = new Wallpaper(data, dir, dataType);
 
-                Items.Insert(0, model);
+                if (_items.Count - 1 == _index)
+                {
+                    RebuildIndex(true);
+                }
+
+                Items.Insert(_items.Count - 1, model);
+
+                if (Placeholder == Visibility.Visible)
+                {
+                    Placeholder = Visibility.Collapsed;
+                }
+
                 _desktopCore.SetWallpaper(model, monitor);
             }
         }
@@ -233,7 +314,19 @@ namespace LateCat.ViewModels
             if (libItem != null)
             {
                 var binarySearchIndex = BinarySearch(Items, libItem.Title);
+
+                if (binarySearchIndex <= _index)
+                {
+                    RebuildIndex(true);
+                }
+
                 Items.Insert(binarySearchIndex, libItem);
+
+                if (Placeholder == Visibility.Visible)
+                {
+                    Placeholder = Visibility.Collapsed;
+                    CurrentItem = _items.FirstOrDefault()!;
+                }
             }
         }
 
@@ -401,7 +494,7 @@ namespace LateCat.ViewModels
             new System.Threading.ThreadStart(delegate
             {
                 if (sender is IWallpaperMetadata metadata)
-                {                    
+                {
                     _desktopCore.SetWallpaper(metadata, _settings.Settings.SelectedMonitor);
                 }
 

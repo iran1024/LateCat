@@ -1,7 +1,6 @@
 ﻿using LateCat.Core;
 using LateCat.Helpers;
 using LateCat.PoseidonEngine;
-using LateCat.PoseidonEngine.Abstractions;
 using LateCat.PoseidonEngine.Core;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -17,7 +16,6 @@ namespace LateCat
         #region init        
         private static readonly Mutex mutex = new(false, Constants.SingleInstance.UniqueAppName);
 
-        public static string OriginalDesktopWallpaperPath { get; private set; }
         public static string WallpaperDir { get; set; }
         public static string WallpaperTempDir { get; set; }
         public static string WallpaperDataDir { get; set; }
@@ -35,7 +33,7 @@ namespace LateCat
                     try
                     {
                         var args = Environment.GetCommandLineArgs().Skip(1).ToArray();
-                        PipeClient.SendMessage(Constants.SingleInstance.PipeServerName, args.Length != 0 ? args : new string[] { "--ShowApp", "true" });
+                        PipeClient.SendMessage(Constants.SingleInstance.PipeServerName, args.Length != 0 ? args : new string[] { "--showapp", "true" });
                     }
                     catch
                     {
@@ -63,13 +61,6 @@ namespace LateCat
             {
                 MessageBox.Show($"创建IPC Server失败: {e.Message}", "Late Cat");
             }
-
-            var sb = new System.Text.StringBuilder(300);
-
-            _ = Win32.SystemParametersInfo(Win32.SPI_GETDESKWALLPAPER, 300, sb, 0);
-
-            OriginalDesktopWallpaperPath = sb.ToString();
-            sb.Clear();
 
             try
             {
@@ -118,7 +109,8 @@ namespace LateCat
 
         public static void ExitApplication()
         {
-            App.Services.GetRequiredService<IDesktopCore>().RestoreDeskWallpaper();
+            MainWindow.IsExit = true;
+
             ((ServiceProvider)App.Services)?.Dispose();
 
             Application.Current.Shutdown();

@@ -209,7 +209,7 @@ namespace LateCat.ViewModels
             {
                 if (_ok)
                 {
-                    _ = Json<WallpaperInfo>.StoreData(
+                    Json<WallpaperInfo>.StoreData(
                         Path.Combine(_metadata.InfoFolderPath, "WallpaperInfo.json"), _metadata.WallpaperInfo);
 
                     _metadata.Status = WallpaperProcessStatus.Ready;

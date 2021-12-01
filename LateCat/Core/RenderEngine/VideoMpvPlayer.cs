@@ -367,7 +367,7 @@ namespace LateCat.Core
         {
             _process.OutputDataReceived -= Proc_OutputDataReceived;
             _process?.Dispose();
-            DesktopUtil.RefreshDesktop(Program.OriginalDesktopWallpaperPath);
+            DesktopUtilities.RefreshDesktop();
         }
 
         #region process task
@@ -453,10 +453,10 @@ namespace LateCat.Core
             var task = _processWaitTask;
             if (task != null)
             {
-                if ((task.IsCompleted == false
+                if (task.IsCompleted == false
                 || task.Status == TaskStatus.Running
                 || task.Status == TaskStatus.WaitingToRun
-                || task.Status == TaskStatus.WaitingForActivation))
+                || task.Status == TaskStatus.WaitingForActivation)
                 {
                     return false;
                 }
@@ -475,7 +475,7 @@ namespace LateCat.Core
             }
             catch { }
 
-            DesktopUtil.RefreshDesktop(Program.OriginalDesktopWallpaperPath);
+            DesktopUtilities.RefreshDesktop();
         }
 
         public void SendMessage(string msg)

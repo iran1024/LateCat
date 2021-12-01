@@ -92,8 +92,4 @@
     </Page>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Views\Popup\" />
-  </ItemGroup>
-
 </Project>

@@ -71,71 +71,6 @@ namespace LateCat.Properties {
         }
         
         /// <summary>
-        ///   查找类似 发现不兼容的程序，任务栏主题设计被禁用。 的本地化字符串。
-        /// </summary>
-        public static string DescIncompatibleTaskbarTheme {
-            get {
-                return ResourceManager.GetString("DescIncompatibleTaskbarTheme", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 选择一个文件或指定一个网站 URL 以设置为壁纸。 的本地化字符串。
-        /// </summary>
-        public static string DescriptionAddWallpaper {
-            get {
-                return ResourceManager.GetString("DescriptionAddWallpaper", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 您确定要取消吗? 的本地化字符串。
-        /// </summary>
-        public static string DescriptionCancelQuestion {
-            get {
-                return ResourceManager.GetString("DescriptionCancelQuestion", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 您确定要从磁盘上永久删除该壁纸吗？ 的本地化字符串。
-        /// </summary>
-        public static string DescriptionDeleteConfirmation {
-            get {
-                return ResourceManager.GetString("DescriptionDeleteConfirmation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 您确定要从图库中删除这张壁纸吗？ 的本地化字符串。
-        /// </summary>
-        public static string DescriptionDeleteConfirmationLibrary {
-            get {
-                return ResourceManager.GetString("DescriptionDeleteConfirmationLibrary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 拖曳文件至图库。 的本地化字符串。
-        /// </summary>
-        public static string DescriptionDragDropFIle {
-            get {
-                return ResourceManager.GetString("DescriptionDragDropFIle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 请注意, 您将使用一个外部应用程序作为壁纸。
-        ///恶意应用程序可能趁机注入木马、病毒..这将损害您的系统。
-        ///仅当您信任此应用程序时，方可继续。 的本地化字符串。
-        /// </summary>
-        public static string DescriptionExternalAppWarning {
-            get {
-                return ResourceManager.GetString("DescriptionExternalAppWarning", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   查找类似 Late Cat 已被最小化到系统托盘，右键单击 Late Cat 的图标以获取更多选项。 的本地化字符串。
         /// </summary>
         public static string DescriptionMinimizedTray {
@@ -204,15 +139,6 @@ namespace LateCat.Properties {
         public static string DescriptionWindowsNCodecInstall {
             get {
                 return ResourceManager.GetString("DescriptionWindowsNCodecInstall", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 更新失败。 的本地化字符串。
-        /// </summary>
-        public static string ExceptionAppUpdateFail {
-            get {
-                return ResourceManager.GetString("ExceptionAppUpdateFail", resourceCulture);
             }
         }
         
@@ -563,15 +489,6 @@ namespace LateCat.Properties {
         }
         
         /// <summary>
-        ///   查找类似 上次检查 的本地化字符串。
-        /// </summary>
-        public static string TextLastChecked {
-            get {
-                return ResourceManager.GetString("TextLastChecked", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   查找类似 更多说明 的本地化字符串。
         /// </summary>
         public static string TextLearnMore {
@@ -604,15 +521,6 @@ namespace LateCat.Properties {
         public static string TextMonitor {
             get {
                 return ResourceManager.GetString("TextMonitor", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 资讯 的本地化字符串。
-        /// </summary>
-        public static string TextmoreInfo {
-            get {
-                return ResourceManager.GetString("TextmoreInfo", resourceCulture);
             }
         }
         
@@ -1292,7 +1200,7 @@ namespace LateCat.Properties {
         }
         
         /// <summary>
-        ///   查找类似 Gif播放器 的本地化字符串。
+        ///   查找类似 GIF播放器 的本地化字符串。
         /// </summary>
         public static string TitleGifPlayer {
             get {
@@ -1571,7 +1479,7 @@ namespace LateCat.Properties {
         }
         
         /// <summary>
-        ///   查找类似 使用GPU 的本地化字符串。
+        ///   查找类似 使用 GPU 的本地化字符串。
         /// </summary>
         public static string TitleVideoHardwareDecode {
             get {

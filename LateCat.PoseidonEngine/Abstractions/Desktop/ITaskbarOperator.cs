@@ -1,9 +1,10 @@
 ﻿using LateCat.PoseidonEngine.Core;
+using System;
 using System.Drawing;
 
 namespace LateCat.PoseidonEngine.Abstractions
 {
-    public interface ITaskbarOperator
+    public interface ITaskbarOperator : IDisposable
     {
         bool IsRunning { get; }
 

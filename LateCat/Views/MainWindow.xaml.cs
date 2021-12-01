@@ -18,6 +18,8 @@ namespace LateCat
         private readonly WallpaperListViewModel _wallpaperListVm;
         private readonly ISettingsService _settings;
 
+        public static bool IsExit { get; set; } = false;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -149,10 +151,13 @@ namespace LateCat
 
         private void WndMain_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            e.Cancel = true;
+            if (!IsExit)
+            {
+                e.Cancel = true;
 
-            Hide();
-            GC.Collect();
+                Hide();
+                GC.Collect();
+            }
         }
 
         private void BtnSettings_Click(object sender, RoutedEventArgs e)

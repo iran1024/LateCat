@@ -58,7 +58,7 @@ class Program
         }
 
 
-        _ = SystemParametersInfo(SPI_SETDESKTOPWALLPAPER, 0, string.Empty, SPIF_UPDATEINIFILE);
+        _ = SystemParametersInfo(SPI_SETDESKTOPWALLPAPER, 0, null, SPIF_UPDATEINIFILE);
     }
 
     private static async void ListenToParent()

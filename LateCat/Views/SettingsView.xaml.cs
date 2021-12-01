@@ -1,25 +1,14 @@
-﻿using LateCat.PoseidonEngine.Core;
-using LateCat.ViewModels;
+﻿using LateCat.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace LateCat.Views
 {
     public partial class SettingsView : Window
     {
-        private bool _isExit = false; 
+        private bool _isExit = false;
         public SettingsView()
         {
             InitializeComponent();
@@ -32,7 +21,7 @@ namespace LateCat.Views
             if (!_isExit)
             {
                 e.Cancel = true;
-            }            
+            }
         }
 
         private void BtnClose_Click(object sender, RoutedEventArgs e)

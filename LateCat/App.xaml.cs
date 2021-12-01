@@ -55,6 +55,7 @@ namespace LateCat
                 .AddSingleton<WallpaperListViewModel>()
                 .AddSingleton<RawInputDX>()
                 .AddSingleton<WndProcMsgWindow>()
+                .AddSingleton<IWallpaperMonitor, WallpaperMonitor>()
 
                 .AddTransient<MonitorLayoutViewModel>()
                 .AddTransient<IWallpaperFactory, WallpaperFactory>()
@@ -115,6 +116,7 @@ namespace LateCat
             Services.GetRequiredService<WndProcMsgWindow>().Show();
             Services.GetRequiredService<RawInputDX>().Show();
             Services.GetRequiredService<IDesktopCore>().RestoreWallpaper();
+            Services.GetRequiredService<IWallpaperMonitor>().Start();
 
             base.OnStartup(e);
         }

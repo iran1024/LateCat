@@ -116,7 +116,7 @@ namespace LateCat.Core
             }
             _process.OutputDataReceived -= Proc_OutputDataReceived;
             _process?.Dispose();
-            DesktopUtil.RefreshDesktop(Program.OriginalDesktopWallpaperPath);
+            DesktopUtilities.RefreshDesktop();
         }
 
         private void Proc_OutputDataReceived(object sender, DataReceivedEventArgs e)
@@ -187,7 +187,7 @@ namespace LateCat.Core
                 _process.Kill();
             }
             catch { }
-            DesktopUtil.RefreshDesktop(Program.OriginalDesktopWallpaperPath);
+            DesktopUtilities.RefreshDesktop();
         }
 
         public void SetVolume(int volume)

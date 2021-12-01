@@ -82,7 +82,7 @@ namespace LateCat.PoseidonEngine.Core
         MediumHigh,
         [Description("1080p")]
         High,
-        [Description("1081p")]
+        [Description("1080p+")]
         Highest
     }
 

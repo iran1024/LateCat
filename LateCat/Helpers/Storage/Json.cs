@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.IO;
-using System.Threading.Tasks;
 
 namespace LateCat.Helpers
 {
@@ -17,7 +16,7 @@ namespace LateCat.Helpers
             return tmp != null ? tmp : throw new ArgumentNullException("json null/corrupt");
         }
 
-        public static async Task StoreData(string filePath, T data)
+        public static void StoreData(string filePath, T data)
         {
             var serializer = new JsonSerializer
             {
@@ -25,7 +24,7 @@ namespace LateCat.Helpers
                 NullValueHandling = NullValueHandling.Include
             };
 
-            await using var sw = new StreamWriter(filePath);
+            using var sw = new StreamWriter(filePath);
             using var writer = new JsonTextWriter(sw);
 
             serializer.Serialize(writer, data);

@@ -160,42 +160,39 @@ namespace LateCat.Models
             }
         }
 
-        public static Wallpaper Default
+        public static Wallpaper CreateDefaultWallpaper()
         {
-            get
+            var defaultImgBuffers = Properties.Resources._default;
+
+            var defaultWallpaperPath = Path.Combine(Program.WallpaperDir, "latecat.default.wallpaper");
+            var defaultWallpaperFilepath = Path.Combine(Program.WallpaperDir, "latecat.default.wallpaper", "_default.jpg");
+
+            if (!Directory.Exists(defaultWallpaperPath))
             {
-                var defaultImgBuffers = Properties.Resources._default;
-
-                var defaultWallpaperPath = Path.Combine(Program.WallpaperDir, "latecat.default.wallpaper");
-                var defaultWallpaperFilepath = Path.Combine(Program.WallpaperDir, "latecat.default.wallpaper", "_default.jpg");
-
-                if (!Directory.Exists(defaultWallpaperPath))
-                {
-                    Directory.CreateDirectory(defaultWallpaperPath);
-                }
-
-                if (!File.Exists(defaultWallpaperFilepath))
-                {
-                    using var file = File.Create(defaultWallpaperFilepath);
-
-                    file.Write(defaultImgBuffers);
-
-                    file.Flush();
-                    file.Close();
-                }
-
-                var wallpaperInfo = new WallpaperInfo()
-                {
-                    AppVersion = "1.0.0.0",
-                    IsAbsolutePath = true,
-                    FileName = defaultWallpaperFilepath,
-                    Type = PoseidonEngine.Core.WallpaperType.Picture
-                };
-
-                Json<WallpaperInfo>.StoreData(Path.Combine(defaultWallpaperPath, "WallpaperInfo.json"), wallpaperInfo);
-
-                return new(wallpaperInfo, defaultWallpaperPath, WallpaperProcessStatus.Ready);
+                Directory.CreateDirectory(defaultWallpaperPath);
             }
+
+            if (!File.Exists(defaultWallpaperFilepath))
+            {
+                using var file = File.Create(defaultWallpaperFilepath);
+
+                file.Write(defaultImgBuffers);
+
+                file.Flush();
+                file.Close();
+            }
+
+            var wallpaperInfo = new WallpaperInfo()
+            {
+                AppVersion = "1.0.0.0",
+                IsAbsolutePath = true,
+                FileName = defaultWallpaperFilepath,
+                Type = PoseidonEngine.Core.WallpaperType.Picture
+            };
+
+            Json<WallpaperInfo>.StoreData(Path.Combine(defaultWallpaperPath, "WallpaperInfo.json"), wallpaperInfo);
+
+            return new(wallpaperInfo, defaultWallpaperPath, WallpaperProcessStatus.Ready);
         }
 
         public Wallpaper(WallpaperInfo wallpaperInfo, string folderPath, WallpaperProcessStatus status = WallpaperProcessStatus.Ready)

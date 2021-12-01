@@ -199,7 +199,7 @@ namespace LateCat.Core
         {
             _process?.Dispose();
 
-            DesktopUtil.RefreshDesktop(Program.OriginalDesktopWallpaperPath);
+            DesktopUtilities.RefreshDesktop();
         }
 
         #region process task
@@ -313,7 +313,7 @@ namespace LateCat.Core
                 _process.Kill();
             }
             catch { }
-            DesktopUtil.RefreshDesktop(Program.OriginalDesktopWallpaperPath);
+            DesktopUtilities.RefreshDesktop();
         }
 
         public Task Capture(string filePath)

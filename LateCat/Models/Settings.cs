@@ -27,7 +27,7 @@ namespace LateCat.Models
         public bool VideoPlayerHwAccel { get; set; }
         public GifPlayer GifPlayer { get; set; }
         public WebBrowser WebBrowser { get; set; }
-        public IMonitor SelectedMonitor { get; set; }        
+        public IMonitor SelectedMonitor { get; set; }
         public string WallpaperDir { get; set; }
         public string WallpaperTempDir { get; set; }
         public string WallpaperDataDir { get; set; }
@@ -47,12 +47,12 @@ namespace LateCat.Models
             WallpaperArrangement = WallpaperArrangement.Per;
             Startup = true;
             ControlPanelOpened = false;
-            OtherAppFocus = PerformanceStrategy.Keep;
+            OtherAppFocus = PerformanceStrategy.Pause;
             OtherAppFullScreen = PerformanceStrategy.Pause;
             InBatteryMode = PerformanceStrategy.Keep;
             VideoPlayer = MediaPlayerType.MPV;
             VideoPlayerHwAccel = true;
-            WebBrowser = WebBrowser.WebView2;
+            WebBrowser = WebBrowser.Cef;
             GifPlayer = GifPlayer.MPV;
 
             ProcessTimerInterval = 500;
@@ -64,7 +64,7 @@ namespace LateCat.Models
             MouseInputMoveAlways = true;
 
             TileSize = 1;
-            SelectedMonitor = MonitorHelper.GetPrimaryMonitor();            
+            SelectedMonitor = MonitorHelper.GetPrimaryMonitor();
             WallpaperDir = PoseidonEngine.Constants.Paths.WallpaperDir;
             WallpaperTempDir = PoseidonEngine.Constants.Paths.WallpaperTempDir;
             WallpaperDataDir = PoseidonEngine.Constants.Paths.WallpaperDataDir;
@@ -73,12 +73,12 @@ namespace LateCat.Models
             AudioVolumeGlobal = 75;
             AudioOnlyOnDesktop = true;
             WallpaperScaling = WallpaperScaler.Fill;
-            CefDiskCache = false;
+            CefDiskCache = true;
             InRemoteDesktop = PerformanceStrategy.Pause;
             PowerSaveMode = PerformanceStrategy.Keep;
 
             DesktopAutoWallpaper = false;
-            SystemTaskbarTheme = TaskbarTheme.None;
+            SystemTaskbarTheme = TaskbarTheme.Blur;
         }
     }
 }

@@ -117,23 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="DescriptionAddWallpaper" xml:space="preserve">
-    <value>选择一个文件或指定一个网站 URL 以设置为壁纸。</value>
-  </data>
-  <data name="DescriptionCancelQuestion" xml:space="preserve">
-    <value>您确定要取消吗?</value>
-  </data>
-  <data name="DescriptionDeleteConfirmation" xml:space="preserve">
-    <value>您确定要从磁盘上永久删除该壁纸吗？</value>
-  </data>
-  <data name="DescriptionDragDropFIle" xml:space="preserve">
-    <value>拖曳文件至图库。</value>
-  </data>
-  <data name="DescriptionExternalAppWarning" xml:space="preserve">
-    <value>请注意, 您将使用一个外部应用程序作为壁纸。
-恶意应用程序可能趁机注入木马、病毒..这将损害您的系统。
-仅当您信任此应用程序时，方可继续。</value>
-  </data>
   <data name="DescriptionMinimizedTray" xml:space="preserve">
     <value>Late Cat 已被最小化到系统托盘，右键单击 Late Cat 的图标以获取更多选项。</value>
   </data>
@@ -145,9 +128,6 @@
   </data>
   <data name="DescriptionWebpageLoad" xml:space="preserve">
     <value>输入要加载的网站链接，支持 Shadertoy.com 着色器链接</value>
-  </data>
-  <data name="ExceptionAppUpdateFail" xml:space="preserve">
-    <value>更新失败。</value>
   </data>
   <data name="ExceptionGeneral" xml:space="preserve">
     <value>哎呀...好像有什么东西坏掉了 :(</value>
@@ -229,9 +209,6 @@
   </data>
   <data name="TextInstall" xml:space="preserve">
     <value>安装</value>
-  </data>
-  <data name="TextmoreInfo" xml:space="preserve">
-    <value>资讯</value>
   </data>
   <data name="TextMoreWallpapers" xml:space="preserve">
     <value>更多壁纸</value>
@@ -510,9 +487,6 @@
   <data name="TitleDocumentation" xml:space="preserve">
     <value>文档</value>
   </data>
-  <data name="DescriptionDeleteConfirmationLibrary" xml:space="preserve">
-    <value>您确定要从图库中删除这张壁纸吗？</value>
-  </data>
   <data name="TitleAudioMaster" xml:space="preserve">
     <value>主音量</value>
   </data>
@@ -565,7 +539,7 @@
     <value>创建预览</value>
   </data>
   <data name="TitleGifPlayer" xml:space="preserve">
-    <value>Gif播放器</value>
+    <value>GIF播放器</value>
   </data>
   <data name="TextFeatureMissing" xml:space="preserve">
     <value>此版本不提供某些功能。</value>
@@ -583,7 +557,7 @@
     <value>仅在桌面聚焦时播放音频</value>
   </data>
   <data name="TitleVideoHardwareDecode" xml:space="preserve">
-    <value>使用GPU</value>
+    <value>使用 GPU</value>
   </data>
   <data name="DescriptionPleaseStop" xml:space="preserve">
     <value>请先停止，然后再继续。</value>
@@ -599,9 +573,6 @@
   </data>
   <data name="TextWallpaperCommandlineArgs" xml:space="preserve">
     <value>输入可选的命令行参数</value>
-  </data>
-  <data name="DescIncompatibleTaskbarTheme" xml:space="preserve">
-    <value>发现不兼容的程序，任务栏主题设计被禁用。</value>
   </data>
   <data name="TitleTaskbarTheme" xml:space="preserve">
     <value>任务栏主题</value>
@@ -644,9 +615,6 @@
   </data>
   <data name="TextChangeWallpaper" xml:space="preserve">
     <value>更换壁纸</value>
-  </data>
-  <data name="TextLastChecked" xml:space="preserve">
-    <value>上次检查</value>
   </data>
   <data name="TitleUpdates" xml:space="preserve">
     <value>更新</value>

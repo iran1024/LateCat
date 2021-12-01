@@ -13,6 +13,7 @@
     <Grid>
         <Grid.Resources>
             <core:IWallpaperMetadataConverter x:Key="IWallpaperMetadataConverter" />
+            <core:WallpaperListCountConverter x:Key="WallpaperListCountConverter" />
         </Grid.Resources>
         <MediaElement x:Name="Media" Source="{Binding CurrentItem, Mode=OneWay, Converter={StaticResource IWallpaperMetadataConverter}}" 
                       HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"></MediaElement>
@@ -21,6 +22,7 @@
             <TextBlock Text="+" Foreground="White" FontSize="36" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-110,0,0" ></TextBlock>
             <TextBlock Text="添加壁纸" Foreground="White" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-50,0,0" ></TextBlock>
         </Grid>
+        <TextBlock Text="把壁纸拖到这里来" FontSize="26" Foreground="#FF675D71" FontWeight="Bold" Margin="0,230,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding Placeholder, Mode=OneWay}" />
     </Grid>
     
 </Page>

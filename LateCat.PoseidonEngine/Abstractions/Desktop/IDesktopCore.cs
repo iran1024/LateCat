@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 namespace LateCat.PoseidonEngine.Abstractions
 {
-    public interface IDesktopCore
+    public interface IDesktopCore : IDisposable
     {
         IntPtr WorkerW { get; }
         ReadOnlyCollection<IWallpaper> Wallpapers { get; }
@@ -14,7 +14,6 @@ namespace LateCat.PoseidonEngine.Abstractions
         void CloseWallpaper(WallpaperType type, bool terminate = false);
         void ResetWallpaper();
         void RestoreWallpaper();
-        void RestoreDeskWallpaper();
         void SeekWallpaper(IWallpaperMetadata wp, float seek, PlaybackPosType type);
         void SeekWallpaper(IMonitor monitor, float seek, PlaybackPosType type);
         void SetWallpaper(IWallpaperMetadata wallpaper, IMonitor display);

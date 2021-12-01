@@ -3,7 +3,7 @@ using System;
 
 namespace LateCat.PoseidonEngine.Abstractions
 {
-    internal interface IPlayback
+    internal interface IPlayback : IDisposable
     {
         void Start();
         void Stop();

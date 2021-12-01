@@ -9,9 +9,12 @@ namespace LateCat.Core
     {
         public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var metadata = (IWallpaperMetadata)value;
+            if (value is IWallpaperMetadata metadata)
+            {
+                return !string.IsNullOrEmpty(metadata.FilePath) ? new Uri(metadata.FilePath) : null;
+            }
 
-            return !string.IsNullOrEmpty(metadata.FilePath) ? new Uri(metadata.FilePath) : null;
+            return null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

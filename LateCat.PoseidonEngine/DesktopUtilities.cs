@@ -2,11 +2,11 @@
 
 namespace LateCat.PoseidonEngine.Core
 {
-    public static class DesktopUtil
+    public static class DesktopUtilities
     {
         public static bool DesktopIconVisibilityDefault { get; }
 
-        static DesktopUtil()
+        static DesktopUtilities()
         {
             DesktopIconVisibilityDefault = GetDesktopIconVisibility();
         }
@@ -52,9 +52,11 @@ namespace LateCat.PoseidonEngine.Core
             return hShellViewWin;
         }
 
-        public static void RefreshDesktop(string originalDeskwallpaper = "")
+        public static void RefreshDesktop()
         {
-            _ = Win32.SystemParametersInfo(Win32.SPI_SETDESKWALLPAPER, 0, originalDeskwallpaper, Win32.SPIF_SENDWININICHANGE);
+#pragma warning disable CS8625 // 无法将 null 字面量转换为非 null 的引用类型。
+            _ = Win32.SystemParametersInfo(Win32.SPI_SETDESKWALLPAPER, 0, null, Win32.SPIF_UPDATEINIFILE);
+#pragma warning restore CS8625 // 无法将 null 字面量转换为非 null 的引用类型。
         }
     }
 }

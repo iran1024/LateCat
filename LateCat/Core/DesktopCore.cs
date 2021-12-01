@@ -239,7 +239,7 @@ namespace LateCat.Core
                             if (!File.Exists(Path.Combine(wallpaper.Metadata.InfoFolderPath, "WallpaperInfo.json")))
                             {
                                 wallpaper.Terminate();
-                                DesktopUtil.RefreshDesktop(Program.OriginalDesktopWallpaperPath);
+                                DesktopUtilities.RefreshDesktop();
                                 await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new ThreadStart(delegate
                                 {
                                     App.Services.GetRequiredService<WallpaperListViewModel>().WallpaperDelete(wallpaper.Metadata);
@@ -271,7 +271,7 @@ namespace LateCat.Core
                             break;
                         case WallpaperProcessStatus.VideoConvert:
                             wallpaper.Terminate();
-                            DesktopUtil.RefreshDesktop();
+                            DesktopUtilities.RefreshDesktop();
 
                             return;
                         default:
@@ -381,7 +381,7 @@ namespace LateCat.Core
                                 }
                                 else
                                 {
-                                    _ = Win32.SystemParametersInfo(Win32.SPI_SETDESKWALLPAPER, 0, imgPath, Win32.SPIF_UPDATEINIFILE | Win32.SPIF_SENDWININICHANGE);
+                                    _ = Win32.SystemParametersInfo((int)Win32.SPI_SETDESKWALLPAPER, 0, imgPath, Win32.SPIF_UPDATEINIFILE | Win32.SPIF_SENDWININICHANGE);
                                 }
                             }
                         }
@@ -414,7 +414,7 @@ namespace LateCat.Core
                     }
                 }
             }
-            catch (Exception ex)
+            catch
             {
 
                 wallpaper?.Terminate();
@@ -444,7 +444,7 @@ namespace LateCat.Core
 
             }
 
-            DesktopUtil.RefreshDesktop(Program.OriginalDesktopWallpaperPath);
+            DesktopUtilities.RefreshDesktop();
         }
 
         private void SetWallpaperSpanMonitor(IntPtr handle)
@@ -457,7 +457,7 @@ namespace LateCat.Core
 
             }
 
-            DesktopUtil.RefreshDesktop(Program.OriginalDesktopWallpaperPath);
+            DesktopUtilities.RefreshDesktop();
         }
 
         private void SetWallpaperDuplicateMonitor(IWallpaper wallpaper)
@@ -539,16 +539,12 @@ namespace LateCat.Core
             {
                 layout.AddRange(_wallpapersDisconnected);
             }
-            /*
-            layout.AddRange(wallpapersDisconnected.Except(wallpapersDisconnected.FindAll(
-                layout => Wallpapers.FirstOrDefault(wp => MonitorHelper.MonitorCompare(layout.PoseidonMonitor, wp.GetMonitor(), MonitorIdentificationMode.DeviceId)) != null)));
-            */
 
             try
             {
                 Json<List<WallpaperLayout>>.StoreData(Constants.Paths.LayoutPath, layout);
             }
-            catch (Exception e)
+            catch
             {
 
             }
@@ -676,7 +672,7 @@ namespace LateCat.Core
                         }
                     }
                 }
-                DesktopUtil.RefreshDesktop();
+                DesktopUtilities.RefreshDesktop();
             }
             finally
             {
@@ -783,29 +779,9 @@ namespace LateCat.Core
             _ = RestoreWallpaperFromLayout(Constants.Paths.LayoutPath);
         }
 
-        public void RestoreDeskWallpaper()
-        {
-            CloseAllWallpapersAndRestoreDeskWallpaper();
-        }
-
         public void CloseAllWallpapers(bool terminate = false)
         {
             CloseAllWallpapers(true, terminate);
-        }
-
-        private void CloseAllWallpapersAndRestoreDeskWallpaper()
-        {
-            if (Wallpapers.Count > 0)
-            {
-                _wallpapers.ForEach(x => x.Terminate());
-
-                _wallpapers.Clear();
-                _watchDog.Clear();
-            }
-            else
-            {
-                DesktopUtil.RefreshDesktop(Program.OriginalDesktopWallpaperPath);
-            }
         }
 
         private void CloseAllWallpapers(bool fireEvent, bool terminate)
@@ -980,12 +956,10 @@ namespace LateCat.Core
                         try
                         {
                             CloseAllWallpapers(false, true);
-                            DesktopUtil.RefreshDesktop(Program.OriginalDesktopWallpaperPath);
+                            DesktopUtilities.RefreshDesktop();
                         }
-                        catch (Exception e)
-                        {
-
-                        }
+                        catch
+                        { }
                     }
                 }
 
@@ -993,35 +967,22 @@ namespace LateCat.Core
             }
         }
 
-        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~WinDesktopCore()
-        // {
-        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        //     Dispose(disposing: false);
-        // }
-
         public void Dispose()
         {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
 
         #region helpers
 
-        /// <summary>
-        /// Adds the wp as child of spawned desktop-workerw window.
-        /// </summary>
-        /// <param name="windowHandle">handle of window</param>
         private void SetParentWorkerW(IntPtr windowHandle)
         {
-            //Legacy, Windows 7
             if (Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor == 1)
             {
-                if (!_workerw.Equals(_progman)) //this should fix the win7 wallpaper disappearing issue.
-                    Win32.ShowWindow(_workerw, (uint)0);
+                if (!_workerw.Equals(_progman))
+                    Win32.ShowWindow(_workerw, 0);
 
-                IntPtr ret = Win32.SetParent(windowHandle, _progman);
+                var ret = Win32.SetParent(windowHandle, _progman);
                 if (ret.Equals(IntPtr.Zero))
                 {
 

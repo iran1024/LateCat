@@ -1516,24 +1516,17 @@ namespace LateCat.PoseidonEngine.Core
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         [return: MarshalAs(UnmanagedType.I4)]
-        public static extern int SystemParametersInfo(uint uiAction, uint uiParam, string pvParam, uint fWinIni);
-
-        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        public static extern int SystemParametersInfo(uint uAction, uint uParam, StringBuilder lpvParam, uint fuWinIni);
+        public static extern int SystemParametersInfo(int uiAction, int uiParam, string pvParam, uint fWinIni);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern bool SystemParametersInfo(
-           int uAction, int uParam, [MarshalAs(UnmanagedType.I1)] bool lpvParam,
-           int flags);
+        public static extern bool SystemParametersInfo(int uAction, int uParam, [MarshalAs(UnmanagedType.I1)] bool lpvParam, int flags);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern bool SystemParametersInfo(
-     int uAction, int uParam, ref int lpvParam,
-     int flags);
+        public static extern bool SystemParametersInfo(int uAction, int uParam, ref int lpvParam, int flags);
 
 
         public const uint SPIF_SENDWININICHANGE = 0x0002;
-        public const uint SPI_SETDESKWALLPAPER = 0x0014;
+        public const int SPI_SETDESKWALLPAPER = 0x0014;
         public const uint SPIF_UPDATEINIFILE = 0x0001;
         public const int SPI_GETDESKWALLPAPER = 0x0073;
         public static uint SPI_SETCLIENTAREAANIMATION = 0x1043;

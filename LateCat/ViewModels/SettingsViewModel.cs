@@ -350,14 +350,14 @@ namespace LateCat.ViewModels
                     _settings.Settings.InputForward = (InputForwardMode)_selectedWallpaperInputMode;
                     UpdateConfigFile();
                 }
-                
+
                 if (_settings.Settings.InputForward == InputForwardMode.MouseKeyboard)
                 {
-                    DesktopUtil.SetDesktopIconVisibility(false);
+                    DesktopUtilities.SetDesktopIconVisibility(false);
                 }
                 else
                 {
-                    DesktopUtil.SetDesktopIconVisibility(DesktopUtil.DesktopIconVisibilityDefault);
+                    DesktopUtilities.SetDesktopIconVisibility(DesktopUtilities.DesktopIconVisibilityDefault);
                 }
             }
         }
@@ -602,7 +602,7 @@ namespace LateCat.ViewModels
                         {
                             _selectedTaskbarThemeIndex = (int)TaskbarTheme.None;
                             _ = Task.Run(() =>
-                                    System.Windows.MessageBox.Show(Properties.Resources.DescIncompatibleTaskbarTheme + "\n\n" + pgm,
+                                    System.Windows.MessageBox.Show("发现不兼容的应用程序\n\n" + pgm,
                                         Properties.Resources.TitleAppName, MessageBoxButton.OK, MessageBoxImage.Information));
                         }
                     }
@@ -631,8 +631,8 @@ namespace LateCat.ViewModels
             return mp switch
             {
                 MediaPlayerType.Wmf => true,
-                MediaPlayerType.LibVLC => false, //depreciated
-                MediaPlayerType.LibMPV => false, //depreciated
+                MediaPlayerType.LibVLC => false,
+                MediaPlayerType.LibMPV => false,
                 MediaPlayerType.LibVLCExt => File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "plugins", "libVLCPlayer", "libVLCPlayer.exe")),
                 MediaPlayerType.LibMPVExt => File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "plugins", "libMPVPlayer", "libMPVPlayer.exe")),
                 MediaPlayerType.MPV => File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "plugins", "mpv", "mpv.exe")),
@@ -693,8 +693,8 @@ namespace LateCat.ViewModels
                         if (Directory.Exists(Path.Combine(parentDir, "wallpapers")) &&
                             Directory.Exists(Path.Combine(parentDir, ".late", "data")))
                         {
-                            var result = System.Windows.MessageBox.Show("Did you mean to select?\n" + parentDir +
-                                "\nBoth '.late' and 'wallpapers' folders are required by Late Cat!",
+                            var result = System.Windows.MessageBox.Show("您的意思是选择" + parentDir +
+                                "\n吗？Late Cat 需要 '.late' 和 'wallpapers' 文件夹!",
                                 Properties.Resources.TitlePleaseWait,
                                 MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes);
                             switch (result)
