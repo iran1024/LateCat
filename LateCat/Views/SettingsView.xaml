@@ -42,9 +42,9 @@
                     <ToggleButton Margin="20, 5, 0, 0" IsChecked="{Binding IsStartup, Mode=TwoWay}" Style="{StaticResource MaterialDesignSwitchToggleButton}" Focusable="False" ToolTip="MaterialDesignSwitchToggleButton" Cursor="Hand" HorizontalAlignment="Left"/>
 
                     <TextBlock Padding="20,10,0,0" FontSize="14">任务栏主题</TextBlock>
-                    <ComboBox x:Name="ComboTaskBarTheme" Margin="20, 5, 0, 0" Focusable="False" ItemsSource="{core:EnumValues poseidon:TaskbarTheme}" FontSize="14" Cursor="Hand"
+                    <ComboBox x:Name="ComboTaskBarTheme" Margin="20, 5, 0, 0" ItemsSource="{core:EnumValues poseidon:TaskbarTheme}" FontSize="14" Cursor="Hand"
                               SelectedIndex="{Binding SelectedTaskbarThemeIndex, Mode=TwoWay}" materialDesign:ComboBoxAssist.ShowSelectedItem="True"
-                      Width="120" HorizontalAlignment="Left" >
+                      Width="120" HorizontalAlignment="Left" Focusable="False" >
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Converter={StaticResource TaskbarThemeEnumValueConverter}}" Cursor="Hand" />
@@ -79,7 +79,7 @@
                       Width="120" HorizontalAlignment="Left" >
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Converter={StaticResource PerformanceStrategyEnumValueConverter}}" Cursor="Hand"/>
+                                <TextBlock Text="{Binding Converter={StaticResource PerformanceStrategyEnumValueConverter}}" Cursor="Hand" />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
@@ -90,7 +90,7 @@
                       Width="120" HorizontalAlignment="Left" >
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Converter={StaticResource PerformanceStrategyEnumValueConverter}}" Cursor="Hand"/>
+                                <TextBlock Text="{Binding Converter={StaticResource PerformanceStrategyEnumValueConverter}}" Cursor="Hand" />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
@@ -101,7 +101,7 @@
                       Width="120" HorizontalAlignment="Left" >
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Converter={StaticResource PerformanceStrategyEnumValueConverter}}" Cursor="Hand"/>
+                                <TextBlock Text="{Binding Converter={StaticResource PerformanceStrategyEnumValueConverter}}" Cursor="Hand" />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
@@ -112,7 +112,7 @@
                       Width="120" HorizontalAlignment="Left" >
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Converter={StaticResource PerformanceStrategyEnumValueConverter}}" Cursor="Hand"/>
+                                <TextBlock Text="{Binding Converter={StaticResource PerformanceStrategyEnumValueConverter}}" Cursor="Hand" />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
@@ -123,7 +123,7 @@
                       Width="120" HorizontalAlignment="Left" >
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Converter={StaticResource MonitorPauseStrategyEnumValueConverter}}" Cursor="Hand"/>
+                                <TextBlock Text="{Binding Converter={StaticResource MonitorPauseStrategyEnumValueConverter}}" Cursor="Hand"  />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
@@ -134,7 +134,7 @@
                       Width="120" HorizontalAlignment="Left" >
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Converter={StaticResource ProcessMonitorAlgorithmEnumValueConverter}}" Cursor="Hand"/>
+                                <TextBlock Text="{Binding Converter={StaticResource ProcessMonitorAlgorithmEnumValueConverter}}" Cursor="Hand"  />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
@@ -157,7 +157,7 @@
                       Width="120" HorizontalAlignment="Left" >
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Converter={StaticResource WallpaperScalerEnumValueConverter}}" Cursor="Hand"/>
+                                    <TextBlock Text="{Binding Converter={StaticResource WallpaperScalerEnumValueConverter}}" Cursor="Hand"  />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
@@ -168,7 +168,7 @@
                       Width="120" HorizontalAlignment="Left" >
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Converter={StaticResource InputForwardModeEnumValueConverter}}" Cursor="Hand"/>
+                                    <TextBlock Text="{Binding Converter={StaticResource InputForwardModeEnumValueConverter}}" Cursor="Hand"  />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
@@ -180,7 +180,7 @@
                       Width="120" HorizontalAlignment="Left" >
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Converter={StaticResource MediaPlayerTypeEnumValueConverter}}" Cursor="Hand"/>
+                                    <TextBlock Text="{Binding Converter={StaticResource MediaPlayerTypeEnumValueConverter}}" Cursor="Hand"  />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
@@ -192,7 +192,7 @@
                       Width="120" HorizontalAlignment="Left" >
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Converter={StaticResource GifPlayerEnumValueConverter}}" Cursor="Hand"/>
+                                    <TextBlock Text="{Binding Converter={StaticResource GifPlayerEnumValueConverter}}" Cursor="Hand"  />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
@@ -203,7 +203,7 @@
                       Width="120" HorizontalAlignment="Left" >
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Converter={StaticResource StreamQualitySuggestionEnumValueConverter}}" Cursor="Hand"/>
+                                    <TextBlock Text="{Binding Converter={StaticResource StreamQualitySuggestionEnumValueConverter}}" Cursor="Hand"  />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
@@ -215,7 +215,7 @@
                       Width="120" HorizontalAlignment="Left" >
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Converter={StaticResource WebBrowserEnumValueConverter}}" Cursor="Hand"/>
+                                    <TextBlock Text="{Binding Converter={StaticResource WebBrowserEnumValueConverter}}" Cursor="Hand"  />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
@@ -227,7 +227,7 @@
             </TabItem>
         </TabControl>
         <Button Height="35" Width="35" Style="{StaticResource MaterialDesignIconButton}" WindowChrome.IsHitTestVisibleInChrome="True" 
-                        x:Name="BtnClose" Margin="440,15,10,390" Cursor="Hand" Click="BtnClose_Click" Foreground="White">
+                        x:Name="BtnClose" Margin="440,15,10,390" Cursor="Hand" Click="BtnClose_Click" Foreground="White" Focusable="False">
             <materialDesign:PackIcon Kind="CloseThick" Height="25" Width="25" Cursor="Hand" Focusable="False" />
         </Button>
     </Grid>

@@ -14,20 +14,13 @@ namespace LateCat.Core
     {
         private readonly string[] classWhiteList = new string[]
         {
-            //startmeu, taskview (win10), action center etc
             "Windows.UI.Core.CoreWindow",
-            //alt+tab Monitor (win10)
             "MultitaskingViewFrame",
-            //taskview (win11)
             "XamlExplorerHostIslandWindow",
-            //widget window (win11)
             "WindowsDashboard",
-            //taskbar(s)
             "Shell_TrayWnd",
             "Shell_SecondaryTrayWnd",
-            //systray notifyicon expanded popup
             "NotifyIconOverflowWindow",
-            //rainmeter widgets
             "RainmeterMeterWindow"
         };
         private IntPtr workerWOrig, progman;
@@ -356,7 +349,7 @@ namespace LateCat.Core
         private bool IsWhitelistedClass(IntPtr hwnd)
         {
             const int maxChars = 256;
-            StringBuilder className = new StringBuilder(maxChars);
+            var className = new StringBuilder(maxChars);
             return Win32.GetClassName((int)hwnd, className, maxChars) > 0 && classWhiteList.Any(x => x.Equals(className.ToString(), StringComparison.Ordinal));
         }
 

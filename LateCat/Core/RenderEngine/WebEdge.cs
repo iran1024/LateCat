@@ -146,7 +146,7 @@ namespace LateCat.Core
 
         public async Task Capture(string filePath)
         {
-            await _render?.CaptureMonitorshot(Path.GetExtension(filePath) != ".jpg" ? filePath + ".jpg" : filePath, ScreenshotFormat.jpeg);
+            await _render?.CaptureScreenshot(Path.GetExtension(filePath) != ".jpg" ? filePath + ".jpg" : filePath, ScreenshotFormat.jpeg);
         }
 
         public void SendMessage(IPCMessage obj)

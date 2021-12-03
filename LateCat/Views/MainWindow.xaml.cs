@@ -29,7 +29,7 @@ namespace LateCat
 
             App.Services.GetRequiredService<IDesktopCore>().WallpaperChanged += SetupDesktop_WallpaperChanged;
 
-            DataContext = this;
+            DataContext = this;            
         }
 
         private void SetupDesktop_WallpaperChanged(object? sender, EventArgs e)

@@ -26,15 +26,15 @@
         <materialDesign:ColorZone Mode="PrimaryMid" VerticalAlignment="Top" Margin="0" Padding="10" materialDesign:ShadowAssist.ShadowDepth="Depth0" ClipToBounds="False" MouseDown="ColorZone_MouseDown">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="选择显示器" Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="16" Foreground="White" />
-                <Button Height="35" Width="35" Style="{StaticResource MaterialDesignIconButton}" WindowChrome.IsHitTestVisibleInChrome="True" Margin="515, 0, 0, 0" x:Name="BtnClose" Cursor="Hand" Click="BtnClose_Click" Foreground="White">
+                <Button Height="35" Width="35" Style="{StaticResource MaterialDesignIconButton}" WindowChrome.IsHitTestVisibleInChrome="True" Margin="515, 0, 0, 0" x:Name="BtnClose" Cursor="Hand" Click="BtnClose_Click" Foreground="White" Focusable="False">
                     <materialDesign:PackIcon Kind="CloseThick" Height="25" Width="25" Cursor="Hand" Focusable="False" />
                 </Button>
             </StackPanel>
         </materialDesign:ColorZone>
        
-        <Grid Width="450" Height="300" Margin="0, 40, 0, 0">
+        <Grid Width="450" Height="300" Margin="0, 40, 0, 0" >
             <ListView HorizontalAlignment="Center" VerticalAlignment="Center" ItemsSource="{Binding MonitorItems}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}" 
-                      ItemContainerStyle="{StaticResource ItemPadding}" >
+                      ItemContainerStyle="{StaticResource ItemPadding}" IsTabStop="False" >
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel/>
@@ -42,9 +42,9 @@
                 </ListView.ItemsPanel>
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Width="192" Height="108" >
+                        <Grid Width="192" Height="108">
                             <Viewbox Width="192" Height="108">
-                                <TextBlock Text="{Binding Title}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding Title}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Viewbox>
                         </Grid>
                     </DataTemplate>
@@ -54,20 +54,20 @@
         <StackPanel Grid.Row="1" HorizontalAlignment="Left" Margin="15, 0, 5, 5" MinWidth="400">
             <TextBlock Text="{x:Static p:Resources.TitleWallpaperLayout}" FontSize="18"/>
 
-            <RadioButton IsChecked="{Binding SelectedWallpaperLayout, Converter={StaticResource WallpaperArrangementConverter}, ConverterParameter=0, Mode=TwoWay}" GroupName="Arrangement" FontSize="14">
+            <RadioButton IsChecked="{Binding SelectedWallpaperLayout, Converter={StaticResource WallpaperArrangementConverter}, ConverterParameter=0, Mode=TwoWay}" GroupName="Arrangement" FontSize="14"  Focusable="False">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{x:Static p:Resources.TextWallpaperLayoutPerMonitor}"/>
+                    <TextBlock Text="{x:Static p:Resources.TextWallpaperLayoutPerMonitor}" />
                     <TextBlock Text="{Binding SelectedItem.Monitor.DeviceNumber, StringFormat=' ( {0} ) '}" Foreground="Black" FontWeight="Bold"/>
                 </StackPanel>
             </RadioButton>
-            <RadioButton IsChecked="{Binding SelectedWallpaperLayout, Converter={StaticResource WallpaperArrangementConverter}, ConverterParameter=1, Mode=TwoWay}" GroupName="Arrangement" FontSize="14" Content="{x:Static p:Resources.TextWallpaperLayoutSpan}"/>
-            <RadioButton IsChecked="{Binding SelectedWallpaperLayout, Converter={StaticResource WallpaperArrangementConverter}, ConverterParameter=2, Mode=TwoWay}" GroupName="Arrangement" FontSize="14" Content="{x:Static p:Resources.TextWallpaperLayoutDuplicate}"/>
+            <RadioButton IsChecked="{Binding SelectedWallpaperLayout, Converter={StaticResource WallpaperArrangementConverter}, ConverterParameter=1, Mode=TwoWay}" GroupName="Arrangement" FontSize="14" Content="{x:Static p:Resources.TextWallpaperLayoutSpan}" Focusable="False" />
+            <RadioButton IsChecked="{Binding SelectedWallpaperLayout, Converter={StaticResource WallpaperArrangementConverter}, ConverterParameter=2, Mode=TwoWay}" GroupName="Arrangement" FontSize="14" Content="{x:Static p:Resources.TextWallpaperLayoutDuplicate}" Focusable="False" />
             
         </StackPanel>
 
         <StackPanel Grid.Row="1" HorizontalAlignment="Right"  Margin="15, 15, 20, 40">
-            <Button Content="{x:Static p:Resources.TextCustomiseWallpaper}" MaxWidth="160" Width="160" Margin="0, 5, 0, 0" Command="{Binding CustomiseWallpaperCommand}"/>
-            <Button Content="{x:Static p:Resources.TextCloseWallpapers}" MaxWidth="160" Width="160" Margin="0, 5, 0, 0" Command="{Binding CloseWallpaperCommand}"/>
+            <Button Content="{x:Static p:Resources.TextCustomiseWallpaper}" MaxWidth="160" Width="160" Margin="0, 5, 0, 0" Command="{Binding CustomiseWallpaperCommand}" Focusable="False" />
+            <Button Content="{x:Static p:Resources.TextCloseWallpapers}" MaxWidth="160" Width="160" Margin="0, 5, 0, 0" Command="{Binding CloseWallpaperCommand}" Focusable="False" />
         </StackPanel>
     </Grid>
 </Window>

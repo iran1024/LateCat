@@ -1,5 +1,6 @@
 ﻿using LateCat.Core.Cef;
 using LateCat.PoseidonEngine;
+using LateCat.PoseidonEngine.Abstractions;
 using LateCat.PoseidonEngine.Core;
 using LateCat.PoseidonEngine.Utilities;
 using Microsoft.Web.WebView2.Core;
@@ -44,6 +45,17 @@ namespace LateCat.Views
 
             webView.CoreWebView2.ProcessFailed += CoreWebView2_ProcessFailed;
 
+            webView.Width = Program.PreviewerWidth;
+            webView.Height = Program.PreviewerHeight;
+
+            webView.AllowDrop = false;
+
+            webView.CoreWebView2.Settings.AreDevToolsEnabled = false;
+
+
+            await webView.ExecuteScriptAsync(@"document.ondragover = function (e) { e.preventDefault(); return false; }");
+            await webView.ExecuteScriptAsync(@"document.ondrop = function (e) { e.preventDefault(); return false; }");
+
             if (_wallpaperType == WallpaperType.Url)
             {
                 string tmp = string.Empty;
@@ -69,9 +81,13 @@ namespace LateCat.Views
             return webView.Handle;
         }
 
-        private void WebView2Element_Loaded(object sender, RoutedEventArgs e)
+        public void ChangeSource(IWallpaperMetadata metadata)
         {
 
+        }
+
+        private void WebView2Element_Loaded(object sender, RoutedEventArgs e)
+        {
             WindowOperator.RemoveWindowFromTaskbar(new WindowInteropHelper(this).Handle);
 
             ShowInTaskbar = false;
@@ -196,7 +212,7 @@ namespace LateCat.Views
         {
             try
             {
-                if (path == null)
+                if (string.IsNullOrEmpty(path))
                     return;
 
                 foreach (var item in PropertiesJsonHelper.LoadProperties(path))
@@ -222,7 +238,7 @@ namespace LateCat.Views
                             {
                                 await ExecuteScriptFunctionAsync("LateCatPropertyListener",
                                 item.Key,
-                                null); //or custom msg
+                                null);
                             }
                         }
                         else if (uiElementType.Equals("checkbox", StringComparison.OrdinalIgnoreCase))
@@ -268,9 +284,9 @@ namespace LateCat.Views
         }
 
         //ref: https://github.com/MicrosoftEdge/WebView2Feedback/issues/529
-        public async Task CaptureMonitorshot(string filePath, ScreenshotFormat format)
+        public async Task CaptureScreenshot(string filePath, ScreenshotFormat format)
         {
-            var base64String = await CaptureMonitorshot(format);
+            var base64String = await CaptureScreenshot(format);
             var imageBytes = Convert.FromBase64String(base64String);
             switch (format)
             {
@@ -293,7 +309,7 @@ namespace LateCat.Views
             }
         }
 
-        private async Task<string> CaptureMonitorshot(ScreenshotFormat format)
+        private async Task<string> CaptureScreenshot(ScreenshotFormat format)
         {
             var param = format switch
             {

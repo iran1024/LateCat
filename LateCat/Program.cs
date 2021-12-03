@@ -19,6 +19,9 @@ namespace LateCat
         public static string WallpaperDir { get; set; }
         public static string WallpaperTempDir { get; set; }
         public static string WallpaperDataDir { get; set; }
+
+        public static double PreviewerWidth { get; set; }
+        public static double PreviewerHeight { get; set; }
         #endregion //init
 
         #region app entry

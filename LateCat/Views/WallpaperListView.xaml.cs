@@ -1,4 +1,6 @@
-﻿using LateCat.ViewModels;
+﻿using LateCat.Core;
+using LateCat.PoseidonEngine.Abstractions;
+using LateCat.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Windows;
@@ -12,6 +14,8 @@ namespace LateCat.Views
         public event EventHandler<DragEventArgs> FileDroppedEvent;
         private readonly MainWindow _mainWnd;
 
+        private readonly WallpaperPreviewerViewModel _previewerVm;
+
         public WallpaperListView()
         {
             InitializeComponent();
@@ -21,31 +25,14 @@ namespace LateCat.Views
             _mainWnd = App.Services.GetRequiredService<MainWindow>();
             _mainWnd.Loading.Visibility = Visibility.Visible;
 
-            Media.SourceUpdated += Media_SourceUpdated;
-            Media.MediaEnded += Media_MediaEnded;
-            Media.MediaOpened += Media_MediaOpened;
-        }
+            _previewerVm = App.Services.GetRequiredService<WallpaperPreviewerViewModel>();
 
-        private void Media_MediaOpened(object sender, RoutedEventArgs e)
-        {
-            _mainWnd.Loading.Visibility = Visibility.Collapsed;
-        }
-
-        private void Media_MediaEnded(object sender, RoutedEventArgs e)
-        {
-            Media.LoadedBehavior = MediaState.Manual;
-            ((MediaElement)sender).Stop();
-            ((MediaElement)sender).Play();
-        }
-
-        private void Media_SourceUpdated(object? sender, System.Windows.Data.DataTransferEventArgs e)
-        {
-            throw new NotImplementedException();
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-
+            Program.PreviewerWidth = ActualWidth;
+            Program.PreviewerHeight = ActualHeight;
         }
 
         private void Page_DragEnter(object sender, DragEventArgs e)
@@ -68,6 +55,21 @@ namespace LateCat.Views
             FileDroppedEvent?.Invoke(sender, e);
 
             Mask.Visibility = Visibility.Collapsed;
+        }
+
+        private void Previewer_SourceChanged(object sender, RoutedEventArgs e)
+        {
+            if (Previewer.Content != null
+                && Previewer.Content is WebPreviewer webPreviewer)
+            {
+                webPreviewer.Close();
+            }
+
+            _previewerVm.OnWallpaperPreviewerSourceChanged(Previewer.Source);
+
+            Previewer.Content = _previewerVm.GetWallpaperPreviewer();
+
+            ((IPreviewer)Previewer.Content).Preview();
         }
     }
 }

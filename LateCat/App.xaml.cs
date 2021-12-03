@@ -53,13 +53,19 @@ namespace LateCat
                 .AddSingleton<ITaskbarOperator, TaskbarOperator>()
                 .AddSingleton<SettingsViewModel>()
                 .AddSingleton<WallpaperListViewModel>()
+                .AddSingleton<WallpaperPreviewerViewModel>()
                 .AddSingleton<RawInputDX>()
                 .AddSingleton<WndProcMsgWindow>()
                 .AddSingleton<IWallpaperMonitor, WallpaperMonitor>()
+                .AddSingleton<IPreviewer, ImagePreviewer>()
+                .AddSingleton<IPreviewer, VideoPreviewer>()
+                .AddSingleton<IPreviewer, WebPreviewer>()
 
                 .AddTransient<MonitorLayoutViewModel>()
                 .AddTransient<IWallpaperFactory, WallpaperFactory>()
                 .AddTransient<IPropertyFactory, PropertyFactory>()
+                .AddTransient<IPreviewerProvider, PreviewerProvider>()
+                .AddTransient<IPreviewerFactory, PreviewerFactory>()
 
                 .BuildServiceProvider();
         }

@@ -9,6 +9,7 @@
         xmlns:control="clr-namespace:LateCat.Controls"
         xmlns:Helpers="clr-namespace:LateCat.Helpers" xmlns:views="clr-namespace:LateCat.Views" x:Name="WndMain" x:Class="LateCat.MainWindow"
         mc:Ignorable="d"
+        xmlns:wv="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         Height="666" Width="999" ResizeMode="NoResize" Title="{x:Static p:Resources.TitleAppName}"                
         Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" Closing="WndMain_Closing" >
     <WindowChrome.WindowChrome>
@@ -47,7 +48,6 @@
         </materialDesign:ColorZone>
 
         <control:Loading x:Name="Loading"  Visibility="Collapsed"></control:Loading>
-
         <Frame x:Name="Frame" Source="WallpaperListView.xaml" VerticalAlignment="Top" Margin="0, 65, 0, 0" Focusable="False" >
             
         </Frame>

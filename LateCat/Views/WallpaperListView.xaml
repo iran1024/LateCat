@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:core="clr-namespace:LateCat.Core"
       xmlns:p="clr-namespace:LateCat.Properties"
-      xmlns:local="clr-namespace:LateCat.Views"
+      xmlns:local="clr-namespace:LateCat.Views"     
       mc:Ignorable="d" AllowDrop="True"
       d:DesignHeight="450" d:DesignWidth="800"
       Loaded="Page_Loaded" DragLeave="Page_DragLeave" Drop="Page_Drop" DragEnter="Page_DragEnter">
@@ -15,8 +15,8 @@
             <core:IWallpaperMetadataConverter x:Key="IWallpaperMetadataConverter" />
             <core:WallpaperListCountConverter x:Key="WallpaperListCountConverter" />
         </Grid.Resources>
-        <MediaElement x:Name="Media" Source="{Binding CurrentItem, Mode=OneWay, Converter={StaticResource IWallpaperMetadataConverter}}" 
-                      HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"></MediaElement>
+        <local:WallpaperPreviewer x:Name="Previewer" Source="{Binding CurrentItem, Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill" SourceChanged="Previewer_SourceChanged" />
+        
         <Grid x:Name="Mask" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Visibility="Collapsed">
             <Label Width="Auto" Height="Auto" Background="#7F252525" />
             <TextBlock Text="+" Foreground="White" FontSize="36" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-110,0,0" ></TextBlock>
