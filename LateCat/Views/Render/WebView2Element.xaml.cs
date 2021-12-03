@@ -45,16 +45,18 @@ namespace LateCat.Views
 
             webView.CoreWebView2.ProcessFailed += CoreWebView2_ProcessFailed;
 
+            webView.HorizontalAlignment = HorizontalAlignment.Center;
+            webView.VerticalAlignment = VerticalAlignment.Center;
+
             webView.Width = Program.PreviewerWidth;
             webView.Height = Program.PreviewerHeight;
 
             webView.AllowDrop = false;
 
             webView.CoreWebView2.Settings.AreDevToolsEnabled = false;
-
-
-            await webView.ExecuteScriptAsync(@"document.ondragover = function (e) { e.preventDefault(); return false; }");
-            await webView.ExecuteScriptAsync(@"document.ondrop = function (e) { e.preventDefault(); return false; }");
+            webView.CoreWebView2.Settings.IsStatusBarEnabled = false;
+            webView.CoreWebView2.Settings.AreBrowserAcceleratorKeysEnabled = false;
+            webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
 
             if (_wallpaperType == WallpaperType.Url)
             {
@@ -78,12 +80,22 @@ namespace LateCat.Views
                 webView.CoreWebView2.Navigate(_htmlPath);
             }
 
+            await ExecuteScrpitAsync(@"document.body.parentNode.style.overflowY = 'hidden';");
+            await ExecuteScrpitAsync(@"document.ondragover = function (e) { e.preventDefault(); return false; }");
+            await ExecuteScrpitAsync(@"document.ondrop = function (e) { e.preventDefault(); return false; }");
+
             return webView.Handle;
         }
 
         public void ChangeSource(IWallpaperMetadata metadata)
         {
 
+        }
+
+        private async Task<string> ExecuteScrpitAsync(string javascript)
+        {
+            await webView.CoreWebView2.ExecuteScriptAsync(javascript);
+            return await webView.ExecuteScriptAsync(javascript);
         }
 
         private void WebView2Element_Loaded(object sender, RoutedEventArgs e)

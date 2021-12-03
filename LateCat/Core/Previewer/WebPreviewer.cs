@@ -10,7 +10,6 @@ namespace LateCat.Core
 {
     internal class WebPreviewer : Border, IPreviewer
     {
-        private bool _isInit = false;
         private WebView2Element _webView2;
 
         public WebPreviewer()
@@ -34,8 +33,17 @@ namespace LateCat.Core
         public IPreviewer ChangeSource(IWallpaperMetadata metadata)
         {
             _webView2 = new WebView2Element(metadata.FilePath, metadata.WallpaperInfo.Type, metadata.PropertyPath);
+            _webView2.webView.NavigationCompleted += WebView_NavigationCompleted;
 
             return this;
+        }
+
+        private void WebView_NavigationCompleted(
+            object? sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
+        {
+            WindowOperations.SetProgramToFramework(Window.GetWindow(this), new WindowInteropHelper(_webView2).Handle, this);
+
+            App.Services.GetRequiredService<MainWindow>().Loading.Visibility = Visibility.Collapsed;
         }
 
         public async void Preview()
@@ -44,27 +52,17 @@ namespace LateCat.Core
 
             if (_webView2 != null)
             {
-                Width = Program.PreviewerWidth;
-                Height = Program.PreviewerHeight;
-
                 _webView2.Show();
 
-                var hWnd = new WindowInteropHelper(_webView2).Handle;
+                Width = Program.PreviewerWidth;
+                Height = Program.PreviewerHeight;
 
                 try
                 {
                     await _webView2.InitializeWebView();
                 }
                 catch
-                {
-
-                }
-                finally
-                {
-                    WindowOperations.SetProgramToFramework(Window.GetWindow(this), hWnd, this);
-
-                    App.Services.GetRequiredService<MainWindow>().Loading.Visibility = Visibility.Collapsed;
-                }
+                { }
             }
         }
 
