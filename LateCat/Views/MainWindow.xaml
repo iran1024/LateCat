@@ -16,7 +16,7 @@
         <WindowChrome CaptionHeight="30"/>
     </WindowChrome.WindowChrome>
     <Grid>
-        <materialDesign:ColorZone Mode="PrimaryMid" VerticalAlignment="Top" Margin="0" Padding="5" materialDesign:ShadowAssist.ShadowDepth="Depth0" ClipToBounds="False" MouseDown="ColorZone_MouseDown">
+        <materialDesign:ColorZone Mode="PrimaryMid" VerticalAlignment="Top" Margin="0" Padding="5" materialDesign:ShadowAssist.ShadowDepth="Depth0" ClipToBounds="False" MouseDown="ColorZone_MouseDown" Cursor="Hand">
             <StackPanel Orientation="Horizontal">
                 <Button Height="35" Width="35" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFloatingActionButton}" WindowChrome.IsHitTestVisibleInChrome="True" x:Name="BtnSettings" Margin="10" Cursor="Hand" Click="BtnSettings_Click" Focusable="False"  >
                     <materialDesign:PackIcon Kind="Settings" Height="25" Width="25" Cursor="Hand" Focusable="False" />
@@ -48,7 +48,7 @@
         </materialDesign:ColorZone>
 
         <control:Loading x:Name="Loading"  Visibility="Collapsed"></control:Loading>
-        <Frame x:Name="Frame" Source="WallpaperListView.xaml" VerticalAlignment="Top" Margin="0, 65, 0, 0" Focusable="False" >
+        <Frame x:Name="Frame" Source="WallpaperListView.xaml" VerticalAlignment="Top" Width="999" Height="601" Margin="0, 65, 0, 0" Focusable="False" >
             
         </Frame>
 

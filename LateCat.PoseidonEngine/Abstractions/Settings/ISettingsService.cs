@@ -7,7 +7,7 @@ namespace LateCat.PoseidonEngine.Abstractions
     {
         ISettings Settings { get; }
 
-        List<IWallpaperLayout> WallpaperLayouts { get; }
+        List<WallpaperLayout> WallpaperLayouts { get; }
 
         void SaveSettings();
 

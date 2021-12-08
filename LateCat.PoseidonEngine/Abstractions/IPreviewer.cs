@@ -6,7 +6,9 @@
 
         IPreviewer ChangeSource(IWallpaperMetadata metadata);
 
-        virtual void Preview() { }
+        void Preview();
+
+        void Close();
 
         IWallpaperMetadata Metadata { get; }
     }

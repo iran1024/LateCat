@@ -8,6 +8,7 @@ using LateCat.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Navigation;
 
@@ -60,6 +61,7 @@ namespace LateCat
                 .AddSingleton<IPreviewer, ImagePreviewer>()
                 .AddSingleton<IPreviewer, VideoPreviewer>()
                 .AddSingleton<IPreviewer, WebPreviewer>()
+                .AddSingleton<IWebView2Provider, WebView2Provider>()
 
                 .AddTransient<MonitorLayoutViewModel>()
                 .AddTransient<IWallpaperFactory, WallpaperFactory>()
@@ -123,6 +125,7 @@ namespace LateCat
             Services.GetRequiredService<RawInputDX>().Show();
             Services.GetRequiredService<IDesktopCore>().RestoreWallpaper();
             Services.GetRequiredService<IWallpaperMonitor>().Start();
+            //Services.GetRequiredService<IWebView2Provider>().EnsureCoreWebView2Async().Wait();
 
             base.OnStartup(e);
         }

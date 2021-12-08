@@ -10,7 +10,7 @@ namespace LateCat.Core
 {
     internal class WebPreviewer : Border, IPreviewer
     {
-        private WebView2Element _webView2;
+        private WebView2Element _wv2Wnd;
 
         public WebPreviewer()
         {
@@ -32,8 +32,8 @@ namespace LateCat.Core
 
         public IPreviewer ChangeSource(IWallpaperMetadata metadata)
         {
-            _webView2 = new WebView2Element(metadata.FilePath, metadata.WallpaperInfo.Type, metadata.PropertyPath);
-            _webView2.webView.NavigationCompleted += WebView_NavigationCompleted;
+            _wv2Wnd = new WebView2Element(metadata.FilePath, metadata.WallpaperInfo.Type, metadata.PropertyPath);
+            _wv2Wnd.WebView2.NavigationCompleted += WebView_NavigationCompleted;
 
             return this;
         }
@@ -41,25 +41,28 @@ namespace LateCat.Core
         private void WebView_NavigationCompleted(
             object? sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
         {
-            WindowOperations.SetProgramToFramework(Window.GetWindow(this), new WindowInteropHelper(_webView2).Handle, this);
+            if (_wv2Wnd.WebView2.CoreWebView2.Source.Equals("about:blank"))
+            {
+                return;
+            }
+
+            WindowOperations.SetProgramToFramework(Window.GetWindow(this), new WindowInteropHelper(_wv2Wnd).Handle, this);
 
             App.Services.GetRequiredService<MainWindow>().Loading.Visibility = Visibility.Collapsed;
         }
 
         public async void Preview()
         {
-            App.Services.GetRequiredService<MainWindow>().Loading.Visibility = Visibility.Visible;
-
-            if (_webView2 != null)
+            if (_wv2Wnd != null)
             {
-                _webView2.Show();
+                _wv2Wnd.Show();
 
                 Width = Program.PreviewerWidth;
                 Height = Program.PreviewerHeight;
 
                 try
                 {
-                    await _webView2.InitializeWebView();
+                    await _wv2Wnd.InitializeWebView2();
                 }
                 catch
                 { }
@@ -68,7 +71,13 @@ namespace LateCat.Core
 
         public void Close()
         {
-            _webView2.Close();
+            Height = 0;
+            Width = 0;
+            RenderSize = new Size(0, 0);
+
+            _wv2Wnd.WebView2.NavigationCompleted -= WebView_NavigationCompleted;
+
+            _wv2Wnd.Close();
         }
     }
 }

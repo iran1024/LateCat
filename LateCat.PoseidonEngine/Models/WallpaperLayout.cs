@@ -7,9 +7,9 @@ using System.Drawing;
 namespace LateCat.PoseidonEngine.Models
 {
     [Serializable]
-    internal class WallpaperLayout : IWallpaperLayout
+    public class WallpaperLayout : IWallpaperLayout
     {
-        public string ConfigPath { get; set; }
+        public string InfoPath { get; set; }
 
         public PoseidonMonitor Monitor { get; set; }
 
@@ -17,13 +17,13 @@ namespace LateCat.PoseidonEngine.Models
         public WallpaperLayout(string DeviceId, string DeviceName, int BitsPerPixel, Rectangle Bounds, Rectangle WorkingArea, string infoPath)
         {
             Monitor = new PoseidonMonitor(DeviceId, DeviceName, BitsPerPixel, Bounds, WorkingArea);
-            ConfigPath = infoPath;
+            InfoPath = infoPath;
         }
 
-        public WallpaperLayout(PoseidonMonitor Display, string infoPath)
+        public WallpaperLayout(PoseidonMonitor monitor, string infoPath)
         {
-            Monitor = Display;
-            ConfigPath = infoPath;
+            Monitor = monitor;
+            InfoPath = infoPath;
         }
     }
 }

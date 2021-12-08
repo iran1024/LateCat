@@ -4,7 +4,7 @@ namespace LateCat.PoseidonEngine.Abstractions
 {
     public interface IWallpaperLayout
     {
-        public string ConfigPath { get; }
+        public string InfoPath { get; }
 
         public PoseidonMonitor Monitor { get; }
     }

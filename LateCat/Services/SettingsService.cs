@@ -2,6 +2,7 @@
 using LateCat.Models;
 using LateCat.PoseidonEngine;
 using LateCat.PoseidonEngine.Abstractions;
+using LateCat.PoseidonEngine.Models;
 using System.Collections.Generic;
 
 namespace LateCat.Services
@@ -19,7 +20,7 @@ namespace LateCat.Services
 
         public ISettings Settings { get; private set; }
 
-        public List<IWallpaperLayout> WallpaperLayouts { get; private set; }
+        public List<WallpaperLayout> WallpaperLayouts { get; private set; }
 
         public void LoadSettings()
         {
@@ -38,11 +39,11 @@ namespace LateCat.Services
         {
             try
             {
-                WallpaperLayouts = new List<IWallpaperLayout>(Json<List<IWallpaperLayout>>.LoadData(_layoutPath));
+                WallpaperLayouts = new List<WallpaperLayout>(Json<List<WallpaperLayout>>.LoadData(_layoutPath));
             }
             catch
             {
-                WallpaperLayouts = new List<IWallpaperLayout>();
+                WallpaperLayouts = new List<WallpaperLayout>();
                 SaveLayouts();
             }
         }
@@ -54,7 +55,7 @@ namespace LateCat.Services
 
         public void SaveLayouts()
         {
-            Json<List<IWallpaperLayout>>.StoreData(_layoutPath, WallpaperLayouts);
+            Json<List<WallpaperLayout>>.StoreData(_layoutPath, WallpaperLayouts);
         }
     }
 }

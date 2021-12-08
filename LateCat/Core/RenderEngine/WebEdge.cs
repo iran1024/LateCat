@@ -89,7 +89,7 @@ namespace LateCat.Core
                 string message = null;
                 try
                 {
-                    var tmpHwnd = await _render.InitializeWebView();
+                    var tmpHwnd = await _render.InitializeWebView2();
 
                     var parentHwnd = Win32.FindWindowEx(tmpHwnd, IntPtr.Zero, "Chrome_WidgetWin_0", null);
                     if (!parentHwnd.Equals(IntPtr.Zero))

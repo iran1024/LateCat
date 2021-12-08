@@ -21,7 +21,7 @@ namespace LateCat.Factory
             else
             {
                 var instance = (TPreviewer)App.Services.GetServices<IPreviewer>()
-                .First(o => o.GetType().Name.Equals(typeName));
+                    .First(o => o.GetType() == typeof(TPreviewer));
 
                 _maps.Add(typeName, instance);
 

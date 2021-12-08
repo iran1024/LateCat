@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.IO.Pipes;
+using System.Threading.Tasks;
 
 namespace LateCat.Helpers
 {
@@ -11,18 +12,19 @@ namespace LateCat.Helpers
 
         public PipeServer(string channelName)
         {
-            CreateRemoteService(channelName);
+            CreateRemoteService(channelName).ConfigureAwait(false);
         }
 
-        private async void CreateRemoteService(string channelName)
+        private async Task CreateRemoteService(string channelName)
         {
-            using var pipeServer = new NamedPipeServerStream(channelName, PipeDirection.In);
+            await using var pipeServer = new NamedPipeServerStream(channelName, PipeDirection.In);
 
             while (true)
             {
                 await pipeServer.WaitForConnectionAsync().ConfigureAwait(false);
 
-                var reader = new StreamReader(pipeServer);
+                using var reader = new StreamReader(pipeServer);
+
                 var rawArgs = await reader.ReadToEndAsync();
 
                 MessageReceived?.Invoke(this, rawArgs.Split(MessageDelimiter));

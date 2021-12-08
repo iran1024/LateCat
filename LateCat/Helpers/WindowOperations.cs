@@ -91,11 +91,11 @@ namespace LateCat
 
         public static void SetProgramToFramework(Window window, IntPtr pgmHandle, FrameworkElement element)
         {
-            IntPtr previewHwnd = new WindowInteropHelper(window).Handle;
+            var previewHwnd = new WindowInteropHelper(window).Handle;
 
             var prct = new Win32.RECT();
 
-            var reviewPanel = WindowOperations.GetAbsolutePlacement(element, true);
+            var reviewPanel = GetAbsolutePlacement(element, true);
 
             if (!Win32.SetWindowPos(pgmHandle, 1, (int)reviewPanel.Left, (int)reviewPanel.Top, (int)reviewPanel.Width, (int)reviewPanel.Height, 0 | 0x0010))
             {
@@ -115,6 +115,7 @@ namespace LateCat
         public static void SetParentSafe(IntPtr child, IntPtr parent)
         {
             IntPtr ret = Win32.SetParent(child, parent);
+
             if (ret.Equals(IntPtr.Zero))
             {
 

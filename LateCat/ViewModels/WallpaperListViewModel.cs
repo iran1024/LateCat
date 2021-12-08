@@ -24,12 +24,15 @@ namespace LateCat.ViewModels
         private readonly IDesktopCore _desktopCore;
         private readonly ISettingsService _settings;
 
+        private readonly MainWindow _main;
+
         private int _index = 0;
 
         public WallpaperListViewModel(ISettingsService userSettings, IDesktopCore desktopCore)
         {
             _settings = userSettings;
             _desktopCore = desktopCore;
+            _main = App.Services.GetRequiredService<MainWindow>();
 
             foreach (var item in ScanWallpaperFolders(_wallpaperScanFolders))
             {
@@ -53,19 +56,44 @@ namespace LateCat.ViewModels
                 CurrentItem = Wallpaper.CreateDefaultWallpaper();
                 _items.Add(CurrentItem);
             }
+
+            ResetBtnStatus();
         }
 
-        public IWallpaperMetadata? PreviousWallpaper()
+        private void ResetBtnStatus()
         {
-            if (_index > 0)
+            if (_items.Count <= 1)
             {
                 CrossThreadAccessor.RunAsync(() =>
-                    App.Services.GetRequiredService<MainWindow>().Loading.Visibility = Visibility.Visible);
-
-                return CurrentItem = _items[--_index];
+                {
+                    _main.BtnPrev.IsEnabled = false;
+                    _main.BtnNext.IsEnabled = false;
+                });
             }
-
-            return null;
+            else if (_items.Count > 1 && _index == 0)
+            {
+                CrossThreadAccessor.RunAsync(() =>
+                {
+                    _main.BtnPrev.IsEnabled = false;
+                    _main.BtnNext.IsEnabled = true;
+                });
+            }
+            else if (_items.Count > 1 && _index == _items.Count - 1)
+            {
+                CrossThreadAccessor.RunAsync(() =>
+                {
+                    _main.BtnPrev.IsEnabled = true;
+                    _main.BtnNext.IsEnabled = false;
+                });
+            }
+            else
+            {
+                CrossThreadAccessor.RunAsync(() =>
+                {
+                    _main.BtnPrev.IsEnabled = true;
+                    _main.BtnNext.IsEnabled = true;
+                });
+            }
         }
 
         private void DisplayTargetWallpaper(int index)
@@ -76,17 +104,54 @@ namespace LateCat.ViewModels
             }
 
             CrossThreadAccessor.RunAsync(() =>
-                    App.Services.GetRequiredService<MainWindow>().Loading.Visibility = Visibility.Visible);
+                    _main.Loading.Visibility = Visibility.Visible);
 
             CurrentItem = _items[index];
+        }
+
+        public IWallpaperMetadata? PreviousWallpaper()
+        {
+            if (_index > 0)
+            {
+                if (_index == 1)
+                {
+                    CrossThreadAccessor.RunAsync(() =>
+                        _main.BtnPrev.IsEnabled = false);
+                }
+
+                if (!_main.BtnNext.IsEnabled)
+                {
+                    CrossThreadAccessor.RunAsync(() =>
+                        _main.BtnNext.IsEnabled = true);
+                }
+
+                CrossThreadAccessor.RunAsync(() =>
+                    _main.Loading.Visibility = Visibility.Visible);
+
+                return CurrentItem = _items[--_index];
+            }
+
+            return null;
         }
 
         public IWallpaperMetadata? NextWallpaper()
         {
             if (_index < _items.Count - 1)
             {
+                if (_index == _items.Count - 2)
+                {
+                    CrossThreadAccessor.RunAsync(() =>
+                        _main.BtnNext.IsEnabled = false);
+                }
+
+                if (!_main.BtnPrev.IsEnabled)
+                {
+                    CrossThreadAccessor.RunAsync(() =>
+                        _main.BtnPrev.IsEnabled = true);
+                }
+
                 CrossThreadAccessor.RunAsync(() =>
-                    App.Services.GetRequiredService<MainWindow>().Loading.Visibility = Visibility.Visible);
+                    _main.Loading.Visibility = Visibility.Visible);
 
                 return CurrentItem = _items[++_index];
             }
@@ -231,6 +296,8 @@ namespace LateCat.ViewModels
                     DisplayTargetWallpaper(_index);
                 }
 
+                ResetBtnStatus();
+
                 try
                 {
                     if (string.IsNullOrEmpty(metadata.InfoFolderPath))
@@ -305,6 +372,8 @@ namespace LateCat.ViewModels
                 }
 
                 _desktopCore.SetWallpaper(model, monitor);
+
+                ResetBtnStatus();
             }
         }
 
@@ -327,6 +396,8 @@ namespace LateCat.ViewModels
                     Placeholder = Visibility.Collapsed;
                     CurrentItem = _items.FirstOrDefault()!;
                 }
+
+                ResetBtnStatus();
             }
         }
 

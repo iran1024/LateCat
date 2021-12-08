@@ -1,9 +1,10 @@
 ﻿using LateCat.Core.Cef;
-using LateCat.PoseidonEngine;
 using LateCat.PoseidonEngine.Abstractions;
 using LateCat.PoseidonEngine.Core;
 using LateCat.PoseidonEngine.Utilities;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.Wpf;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -20,11 +21,15 @@ namespace LateCat.Views
 {
     public partial class WebView2Element : Window
     {
+        private readonly WebView2 _wv2;
+
         private readonly string _htmlPath;
         private readonly string _propertyPath;
         private readonly WallpaperType _wallpaperType;
 
         public event EventHandler PropertiesInitialized;
+
+        public WebView2 WebView2 => _wv2;
 
         public WebView2Element(string path, WallpaperType type, string propertyPath)
         {
@@ -35,87 +40,69 @@ namespace LateCat.Views
             _htmlPath = path;
             _propertyPath = propertyPath;
             _wallpaperType = type;
+
+            Content = _wv2 = App.Services.GetRequiredService<IWebView2Provider>().GetWebView2();
         }
 
-        public async Task<IntPtr> InitializeWebView()
+        public async Task<IntPtr> InitializeWebView2()
         {
-            var env = await CoreWebView2Environment.CreateAsync(null, Constants.Paths.TempWebView2Dir);
-
-            await webView.EnsureCoreWebView2Async(env);
-
-            webView.CoreWebView2.ProcessFailed += CoreWebView2_ProcessFailed;
-
-            webView.HorizontalAlignment = HorizontalAlignment.Center;
-            webView.VerticalAlignment = VerticalAlignment.Center;
-
-            webView.Width = Program.PreviewerWidth;
-            webView.Height = Program.PreviewerHeight;
-
-            webView.AllowDrop = false;
-
-            webView.CoreWebView2.Settings.AreDevToolsEnabled = false;
-            webView.CoreWebView2.Settings.IsStatusBarEnabled = false;
-            webView.CoreWebView2.Settings.AreBrowserAcceleratorKeysEnabled = false;
-            webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+            await App.Services.GetRequiredService<IWebView2Provider>().EnsureCoreWebView2Async();
 
             if (_wallpaperType == WallpaperType.Url)
             {
                 string tmp = string.Empty;
                 if (TryParseShadertoy(_htmlPath, ref tmp))
                 {
-                    webView.CoreWebView2.NavigateToString(tmp);
+                    _wv2.CoreWebView2.NavigateToString(tmp);
                 }
                 else if ((tmp = StreamHelper.GetYouTubeVideoIdFromUrl(_htmlPath)) != "")
                 {
-                    webView.CoreWebView2.Navigate("https://www.youtube.com/embed/" + tmp +
+                    _wv2.CoreWebView2.Navigate("https://www.youtube.com/embed/" + tmp +
                         "?version=3&rel=0&autoplay=1&loop=1&controls=0&playlist=" + tmp);
                 }
                 else
                 {
-                    webView.CoreWebView2.Navigate(_htmlPath);
+                    _wv2.CoreWebView2.Navigate(_htmlPath);
                 }
             }
             else
             {
-                webView.CoreWebView2.Navigate(_htmlPath);
+                _wv2.CoreWebView2.Navigate(_htmlPath);
             }
 
             await ExecuteScrpitAsync(@"document.body.parentNode.style.overflowY = 'hidden';");
             await ExecuteScrpitAsync(@"document.ondragover = function (e) { e.preventDefault(); return false; }");
             await ExecuteScrpitAsync(@"document.ondrop = function (e) { e.preventDefault(); return false; }");
 
-            return webView.Handle;
-        }
-
-        public void ChangeSource(IWallpaperMetadata metadata)
-        {
-
+            return _wv2.Handle;
         }
 
         private async Task<string> ExecuteScrpitAsync(string javascript)
         {
-            await webView.CoreWebView2.ExecuteScriptAsync(javascript);
-            return await webView.ExecuteScriptAsync(javascript);
+            await _wv2.CoreWebView2.ExecuteScriptAsync(javascript);
+            return await _wv2.ExecuteScriptAsync(javascript);
         }
 
-        private void WebView2Element_Loaded(object sender, RoutedEventArgs e)
+        private async void WebView2Element_Loaded(object sender, RoutedEventArgs e)
         {
             WindowOperator.RemoveWindowFromTaskbar(new WindowInteropHelper(this).Handle);
 
             ShowInTaskbar = false;
             ShowInTaskbar = true;
+
+            await App.Services.GetRequiredService<IWebView2Provider>().EnsureCoreWebView2Async();
+
+            _wv2.CoreWebView2.ProcessFailed += CoreWebView2_ProcessFailed;
+
+            _wv2.Width = Program.PreviewerWidth;
+            _wv2.Height = Program.PreviewerHeight;
         }
 
-        private async void webView_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
+        private async void CoreWebView2_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
         {
             await RestoreProperties(_propertyPath);
 
             PropertiesInitialized?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void CoreWebView2_ProcessFailed(object? sender, CoreWebView2ProcessFailedEventArgs e)
-        {
-
         }
 
         public void MessageProcess(IPCMessage obj)
@@ -125,7 +112,7 @@ namespace LateCat.Views
                 switch (obj.Type)
                 {
                     case MessageType.cmd_reload:
-                        webView?.Reload();
+                        _wv2?.Reload();
                         break;
                     case MessageType.lp_slider:
                         var sl = (IPCSlider)obj;
@@ -191,12 +178,18 @@ namespace LateCat.Views
         {
             try
             {
-                webView?.Dispose();
+                _wv2.CoreWebView2.Navigate("about:blank");
+                _wv2.CoreWebView2.ProcessFailed -= CoreWebView2_ProcessFailed;
             }
             catch
             {
 
             }
+        }
+
+        private void CoreWebView2_ProcessFailed(object? sender, CoreWebView2ProcessFailedEventArgs e)
+        {
+
         }
 
         #region helpers
@@ -217,7 +210,7 @@ namespace LateCat.Views
             }
             script.Append(");");
 
-            return await webView.ExecuteScriptAsync(script.ToString());
+            return await _wv2.ExecuteScriptAsync(script.ToString());
         }
 
         private async Task RestoreProperties(string path)
@@ -271,7 +264,7 @@ namespace LateCat.Views
         }
 
 
-        private bool TryParseShadertoy(string url, ref string html)
+        private static bool TryParseShadertoy(string url, ref string html)
         {
             if (!url.Contains("shadertoy.com/view"))
             {
@@ -331,13 +324,13 @@ namespace LateCat.Views
                 ScreenshotFormat.bmp => "{}", // Not supported by cef
                 _ => "{}",
             };
-            string r3 = await webView.CoreWebView2.CallDevToolsProtocolMethodAsync("Page.captureMonitorshot", param);
+            string r3 = await _wv2.CoreWebView2.CallDevToolsProtocolMethodAsync("Page.captureMonitorshot", param);
             JObject o3 = JObject.Parse(r3);
             JToken data = o3["data"];
             return data.ToString();
         }
 
-        public Image Base64ToImage(string base64String)
+        public static Image Base64ToImage(string base64String)
         {
             // Convert base 64 string to byte[]
             byte[] imageBytes = Convert.FromBase64String(base64String);
@@ -347,7 +340,7 @@ namespace LateCat.Views
             return image;
         }
 
-        public BitmapImage Base64ToBitmapImage(string base64String)
+        public static BitmapImage Base64ToBitmapImage(string base64String)
         {
             var imageBytes = Convert.FromBase64String(base64String);
             var bi = new BitmapImage();

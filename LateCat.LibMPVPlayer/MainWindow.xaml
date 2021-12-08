@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Left='-9999'
         WindowStyle="None"
-        ResizeMode="NoResize" Background="#FF2B2B2B"
+        ResizeMode="NoResize" Background="#FFFFFFFF"
         Title="MainWindow" Height="450" Width="800"
         Closing="Window_Closing" Loaded="Window_Loaded">
     <Grid>

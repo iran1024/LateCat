@@ -44,6 +44,11 @@ namespace LateCat.Core
             Play();
         }
 
+        public new void Close()
+        {
+
+        }
+
         private void VideoPreviewer_MediaOpened(object sender, RoutedEventArgs e)
         {
             App.Services.GetRequiredService<MainWindow>().Loading.Visibility = Visibility.Collapsed;

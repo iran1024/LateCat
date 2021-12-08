@@ -10,7 +10,7 @@
         WindowStyle="None"
         ResizeMode="NoResize"
         Title="MainWindow" Height="450" Width="800"
-        Loaded="Window_Loaded" Background="#FF2B2B2B"
+        Loaded="Window_Loaded" Background="#FFFFFFFF"
         Closing="Window_Closing">
     <Grid>
         <wpf:VideoView x:Name="VideoView"/>

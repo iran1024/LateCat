@@ -1,5 +1,4 @@
-﻿using LateCat.Core;
-using LateCat.PoseidonEngine.Abstractions;
+﻿using LateCat.PoseidonEngine.Abstractions;
 using LateCat.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -26,13 +25,12 @@ namespace LateCat.Views
             _mainWnd.Loading.Visibility = Visibility.Visible;
 
             _previewerVm = App.Services.GetRequiredService<WallpaperPreviewerViewModel>();
-
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             Program.PreviewerWidth = ActualWidth;
-            Program.PreviewerHeight = ActualHeight;
+            Program.PreviewerHeight = ActualHeight;            
         }
 
         private void Page_DragEnter(object sender, DragEventArgs e)
@@ -59,17 +57,13 @@ namespace LateCat.Views
 
         private void Previewer_SourceChanged(object sender, RoutedEventArgs e)
         {
-            if (Previewer.Content != null
-                && Previewer.Content is WebPreviewer webPreviewer)
-            {
-                webPreviewer.Close();
-            }
+            (Previewer.Content as IPreviewer)?.Close();
 
             _previewerVm.OnWallpaperPreviewerSourceChanged(Previewer.Source);
 
             Previewer.Content = _previewerVm.GetWallpaperPreviewer();
 
-            ((IPreviewer)Previewer.Content).Preview();
+            (Previewer.Content as IPreviewer).Preview();
         }
     }
 }

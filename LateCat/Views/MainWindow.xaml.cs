@@ -15,17 +15,14 @@ namespace LateCat
     {
         private MonitorLayoutView _layoutWnd;
         private SettingsView _settingsView;
-        private readonly WallpaperListViewModel _wallpaperListVm;
-        private readonly ISettingsService _settings;
+        private WallpaperListViewModel _wallpaperListVm;
+        private ISettingsService _settings;
 
         public static bool IsExit { get; set; } = false;
 
         public MainWindow()
         {
-            InitializeComponent();
-
-            _wallpaperListVm = App.Services.GetRequiredService<WallpaperListViewModel>();
-            _settings = App.Services.GetRequiredService<ISettingsService>();
+            InitializeComponent();            
 
             App.Services.GetRequiredService<IDesktopCore>().WallpaperChanged += SetupDesktop_WallpaperChanged;
 
@@ -93,10 +90,13 @@ namespace LateCat
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            _wallpaperListVm = App.Services.GetRequiredService<WallpaperListViewModel>();
+            _settings = App.Services.GetRequiredService<ISettingsService>();
+
             var wallpaperLv = (WallpaperListView)Frame.Content;
 
             wallpaperLv.ContextMenuClick += WallpaperListView_ContextMenuClick;
-            wallpaperLv.FileDroppedEvent += WallpaperListView_FileDroppedEvent;
+            wallpaperLv.FileDroppedEvent += WallpaperListView_FileDroppedEvent;            
         }
 
         private void WallpaperListView_ContextMenuClick(object? sender, object e)
@@ -170,7 +170,7 @@ namespace LateCat
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
 
-                _settingsView.Closed += _settingsView_Closed;
+                _settingsView.Closed += SettingsView_Closed;
                 _settingsView.Show();
             }
             else
@@ -179,7 +179,7 @@ namespace LateCat
             }
         }
 
-        private void _settingsView_Closed(object? sender, EventArgs e)
+        private void SettingsView_Closed(object? sender, EventArgs e)
         {
             _settingsView = null;
             Activate();

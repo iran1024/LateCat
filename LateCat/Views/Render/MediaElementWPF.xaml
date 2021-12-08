@@ -10,7 +10,7 @@
         WindowStyle="None"
         ResizeMode="NoResize"
         Closing="Window_Closing"
-        Background="#FF2B2B2B">
+        Background="#FFFFFFFF">
 
     <Grid>
         <MediaElement Name="mePlayer" />

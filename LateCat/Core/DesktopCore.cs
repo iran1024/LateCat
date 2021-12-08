@@ -528,6 +528,7 @@ namespace LateCat.Core
         private void SaveWallpaperLayout()
         {
             var layout = new List<WallpaperLayout>();
+
             _wallpapers.ForEach(wallpaper =>
             {
                 layout.Add(new WallpaperLayout(
@@ -725,7 +726,7 @@ namespace LateCat.Core
                     {
                         await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new ThreadStart(delegate
                         {
-                            var libraryItem = App.Services.GetRequiredService<WallpaperListViewModel>().Items.FirstOrDefault(x => x.InfoFolderPath.Equals(wallpaperLayout[0].ConfigPath));
+                            var libraryItem = App.Services.GetRequiredService<WallpaperListViewModel>().Items.FirstOrDefault(x => x.InfoFolderPath.Equals(wallpaperLayout[0].InfoPath));
 
                             if (libraryItem != null)
                             {
@@ -751,7 +752,7 @@ namespace LateCat.Core
             {
                 foreach (var layout in wallpaperLayout)
                 {
-                    var libraryItem = App.Services.GetRequiredService<WallpaperListViewModel>().Items.FirstOrDefault(x => x.InfoFolderPath.Equals(layout.ConfigPath));
+                    var libraryItem = App.Services.GetRequiredService<WallpaperListViewModel>().Items.FirstOrDefault(x => x.InfoFolderPath.Equals(layout.InfoPath));
                     var Monitor = MonitorHelper.GetMonitor(layout.Monitor.DeviceId, layout.Monitor.DeviceName,
                         layout.Monitor.Bounds, layout.Monitor.WorkingArea, MonitorIdentificationMode.DeviceId);
                     if (libraryItem == null)
@@ -762,7 +763,7 @@ namespace LateCat.Core
                     {
                         if (!_wallpapersDisconnected.Contains(layout))
                         {
-                            _wallpapersDisconnected.Add(new WallpaperLayout((PoseidonMonitor)layout.Monitor, layout.ConfigPath));
+                            _wallpapersDisconnected.Add(new WallpaperLayout((PoseidonMonitor)layout.Monitor, layout.InfoPath));
                         }
                     }
                     else

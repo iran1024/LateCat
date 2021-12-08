@@ -5,15 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"        
         WindowStartupLocation ="Manual"
-        Left='-9999'
+        Left="-9999"
+        Visibility="Collapsed"
         ResizeMode="NoResize"
         WindowStyle="None"
-        Background="#FF2B2B2B"
+        Background="#00000000"
         mc:Ignorable="d"
         Title="WebView2Element" Height="450" Width="800"
-        Closing="Window_Closing">
+        Closing="Window_Closing" Foreground="#00000000">
 
-    <Grid>
-        <wv2:WebView2 Name="webView" NavigationCompleted="webView_NavigationCompleted"/>
-    </Grid>
 </Window>

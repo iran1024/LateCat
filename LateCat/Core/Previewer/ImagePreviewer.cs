@@ -1,4 +1,5 @@
 ﻿using LateCat.PoseidonEngine.Abstractions;
+using LateCat.PoseidonEngine.Core;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Windows;
@@ -40,6 +41,16 @@ namespace LateCat.Core
             Source = bi;
 
             return this;
+        }
+
+        public void Preview()
+        {
+
+        }
+
+        public void Close()
+        {
+            
         }
 
         protected override void OnRender(DrawingContext dc)
