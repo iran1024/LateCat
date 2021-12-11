@@ -12,7 +12,7 @@
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="30"/>
     </WindowChrome.WindowChrome>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -56,11 +56,12 @@
                     <materialDesign:TransitionEffect Kind="SlideInFromLeft" Duration="0:0:0.8" />
                     <materialDesign:TransitionEffect Kind="SlideInFromBottom" Duration="0:0:0.8" OffsetTime="0:0:0.15" />
                 </materialDesign:TransitionerSlide.OpeningEffects>
-                <transitions:Slide4 />
+                <transitions:Slide4 x:Name="EndPage" />
             </materialDesign:TransitionerSlide>
            
         </materialDesign:Transitioner>
 
-        <ProgressBar x:Name="ProgressBar" Height="10" Margin="0, 500, 0,0" Visibility="Hidden" Minimum="0" Maximum="100" />
+        <ProgressBar x:Name="ProgressBar" Height="10" Margin="0,500,0,0" Visibility="Hidden" 
+            Minimum="0" Maximum="100" BorderBrush="#00000000" Foreground="#FF6A2BF3" />
     </Grid>
 </Window>

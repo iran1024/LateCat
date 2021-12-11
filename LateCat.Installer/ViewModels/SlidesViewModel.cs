@@ -15,7 +15,7 @@ namespace LateCat.Installer
             QRCode = new BitmapImage(new Uri(Path.Combine(Constants.InstallerTempDir, "qrcode.png")));
             InstallPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Late Cat");
 
-            Progress = new Progress<double>();           
+            Progress = new Progress<double>();
         }
 
         private BitmapImage _headImage;
@@ -73,7 +73,7 @@ namespace LateCat.Installer
                     _progress = value;
                 }
                 OnPropertyChanged();
-            }             
+            }
         }
 
         private RelayCommand _changeInstallPathCommand;
@@ -87,20 +87,6 @@ namespace LateCat.Installer
                         param => ChangeInstallPath());
                 }
                 return _changeInstallPathCommand;
-            }
-        }
-
-        private RelayCommand _completedCommand;
-        public RelayCommand CompletedCommand
-        {
-            get
-            {
-                if (_completedCommand == null)
-                {
-                    _completedCommand = new RelayCommand(
-                        param => Completed());
-                }
-                return _completedCommand;
             }
         }
 
@@ -120,11 +106,6 @@ namespace LateCat.Installer
 
                 InstallPath = folderBrowserDialog.SelectedPath;
             }
-        }
-
-        private void Completed()
-        {
-
         }
     }
 }

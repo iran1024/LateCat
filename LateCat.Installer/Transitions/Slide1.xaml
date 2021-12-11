@@ -11,7 +11,7 @@
         <StackPanel VerticalAlignment="Center" Margin="10,0,10,0" Height="430">
             <TextBlock Text="安装路径：" FontSize="14" />
             <Button Style="{StaticResource MaterialDesignFlatDarkBgButton}" HorizontalContentAlignment="Left" Focusable="False"
-                    ToolTip="安装路径" materialDesign:HintAssist.Hint="安装路径" Margin="0, 5" Command="{Binding ChangeInstallPathCommand}">
+                    ToolTip="安装路径" materialDesign:HintAssist.Hint="安装路径" Margin="0, 5" Command="{Binding ChangeInstallPathCommand}" Cursor="Hand">
                 <Binding Path="InstallPath" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
                     <Binding.ValidationRules>
                         <local:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />

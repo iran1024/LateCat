@@ -2,6 +2,7 @@
 using LateCat.Installer.Models;
 using System;
 using System.IO;
+using System.Text;
 
 namespace LateCat.Installer.Services
 {
@@ -9,10 +10,16 @@ namespace LateCat.Installer.Services
     {
         public static void ExtractorAll(ResourceMap[] resources, IProgress<double> progress)
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            ZipStrings.CodePage = Encoding.GetEncoding(936).CodePage;
+
             var entryConut = 0L;
             foreach (var resource in resources)
             {
-                using var zip = new ZipFile(resource.ResourceStream);
+                using var tempStream = new MemoryStream();
+                resource.ResourceStream.CopyTo(tempStream);
+
+                using var zip = new ZipFile(tempStream);
 
                 entryConut += zip.Count;
 
@@ -21,9 +28,56 @@ namespace LateCat.Installer.Services
 
             var percent = 100.0 / entryConut;
 
+            var index = 0;
+
             foreach (var resource in resources)
             {
-                InternalExtractor(resource.ResourceStream, resource.DestinationDirectory, progress, percent);
+                if (!Directory.Exists(resource.DestinationDirectory))
+                {
+                    Directory.CreateDirectory(resource.DestinationDirectory);
+                }
+
+                using var inStream = new ZipInputStream(resource.ResourceStream);
+
+                ZipEntry zipEntry;
+
+                while ((zipEntry = inStream.GetNextEntry()) is not null)
+                {
+                    if (zipEntry.IsDirectory)
+                    {
+                        var path = Path.Combine(resource.DestinationDirectory, zipEntry.Name);
+                        if (!Directory.Exists(path))
+                        {
+                            Directory.CreateDirectory(path);
+                        }
+                    }
+
+                    var fileName = Path.GetFileName(zipEntry.Name);
+
+                    if (!string.IsNullOrEmpty(fileName))
+                    {
+                        using var outStream = File.Create(Path.Combine(resource.DestinationDirectory, zipEntry.Name));
+
+                        try
+                        {
+                            var buffer = new byte[1024];
+                            var length = 0;
+
+                            while ((length = inStream.Read(buffer, 0, buffer.Length)) > 0)
+                            {
+                                outStream.Write(buffer, 0, length);
+                            }
+
+                            outStream.Flush();
+                        }
+                        finally
+                        {
+                            outStream.Close();
+                        }
+                    }
+
+                    progress.Report(++index * percent);
+                }
             }
         }
 
@@ -54,57 +108,6 @@ namespace LateCat.Installer.Services
                 {
                     inStream.Close();
                 }
-            }
-        }
-
-        private static void InternalExtractor(Stream sourceArchiveStream, string destinationDirectoryName, IProgress<double> progress, double percent)
-        {
-            if (!Directory.Exists(destinationDirectoryName))
-            {
-                Directory.CreateDirectory(destinationDirectoryName);
-            }
-
-            using var inStream = new ZipInputStream(sourceArchiveStream);
-
-            ZipEntry zipEntry;
-            var index = 0;
-
-            while ((zipEntry = inStream.GetNextEntry()) is not null)
-            {
-                if (zipEntry.IsDirectory)
-                {
-                    var path = Path.Combine(destinationDirectoryName, zipEntry.Name);
-                    if (!Directory.Exists(path))
-                    {
-                        Directory.CreateDirectory(path);
-                    }
-                }
-
-                var fileName = Path.GetFileName(zipEntry.Name);
-
-                if (!string.IsNullOrEmpty(fileName))
-                {
-                    using var outStream = File.Create(Path.Combine(destinationDirectoryName, zipEntry.Name));
-
-                    try
-                    {
-                        var buffer = new byte[1024];
-                        var length = 0;
-
-                        while ((length = inStream.Read(buffer, 0, buffer.Length)) > 0)
-                        {
-                            outStream.Write(buffer, 0, length);
-                        }
-
-                        outStream.Flush();
-                    }
-                    finally
-                    {
-                        outStream.Close();
-                    }
-                }
-
-                progress.Report(++index * percent);
             }
         }
     }
