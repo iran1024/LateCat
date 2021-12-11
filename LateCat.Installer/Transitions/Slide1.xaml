@@ -19,7 +19,7 @@
                 </Binding>
             </Button>
 
-            <Button x:Name="BtnInstall" Style="{StaticResource MaterialDesignFloatingActionButton}" Margin="64" Focusable="False" Click="BtnInstall_Click"
+            <Button x:Name="BtnInstall" Style="{StaticResource MaterialDesignFloatingActionButton}" Margin="64" Focusable="False"
                 Command="{x:Static materialDesign:Transitioner.MoveNextCommand}" ToolTip="开始安装" Cursor="Hand">
                 <materialDesign:PackIcon Kind="Cat" Width="32" Height="32" />
             </Button>

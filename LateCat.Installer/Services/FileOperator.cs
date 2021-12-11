@@ -1,4 +1,5 @@
 ﻿using ICSharpCode.SharpZipLib.Zip;
+using LateCat.Installer.Models;
 using System;
 using System.IO;
 
@@ -6,14 +7,24 @@ namespace LateCat.Installer.Services
 {
     public static class FileOperator
     {
-        public static void Extractor(Stream sourceArchiveStream, string destinationDirectoryName, Progress<int> progress)
+        public static void ExtractorAll(ResourceMap[] resources, IProgress<double> progress)
         {
-            if (!Directory.Exists(destinationDirectoryName))
+            var entryConut = 0L;
+            foreach (var resource in resources)
             {
-                Directory.CreateDirectory(destinationDirectoryName);
+                using var zip = new ZipFile(resource.ResourceStream);
+
+                entryConut += zip.Count;
+
+                resource.ResourceStream.Position = 0;
             }
 
-            InternalExtractor(sourceArchiveStream, destinationDirectoryName);
+            var percent = 100.0 / entryConut;
+
+            foreach (var resource in resources)
+            {
+                InternalExtractor(resource.ResourceStream, resource.DestinationDirectory, progress, percent);
+            }
         }
 
         public static void Save(Stream stream, string path)
@@ -46,18 +57,19 @@ namespace LateCat.Installer.Services
             }
         }
 
-        private static void InternalExtractor(Stream sourceArchiveStream, string destinationDirectoryName)
+        private static void InternalExtractor(Stream sourceArchiveStream, string destinationDirectoryName, IProgress<double> progress, double percent)
         {
-            var zip = new ZipFile(sourceArchiveStream);
-            var entryCount = zip.Count;
+            if (!Directory.Exists(destinationDirectoryName))
+            {
+                Directory.CreateDirectory(destinationDirectoryName);
+            }
 
-            var percent = entryCount / 100;
+            using var inStream = new ZipInputStream(sourceArchiveStream);
 
-            using var zipInStream = new ZipInputStream(sourceArchiveStream);
+            ZipEntry zipEntry;
+            var index = 0;
 
-            ZipEntry zipEntry = null;
-
-            while ((zipEntry = zipInStream.GetNextEntry()) is not null)
+            while ((zipEntry = inStream.GetNextEntry()) is not null)
             {
                 if (zipEntry.IsDirectory)
                 {
@@ -72,25 +84,27 @@ namespace LateCat.Installer.Services
 
                 if (!string.IsNullOrEmpty(fileName))
                 {
-                    using var zipOutStream = File.Create(Path.Combine(destinationDirectoryName, zipEntry.Name));
+                    using var outStream = File.Create(Path.Combine(destinationDirectoryName, zipEntry.Name));
 
                     try
                     {
                         var buffer = new byte[1024];
                         var length = 0;
 
-                        while ((length = zipInStream.Read(buffer, 0, buffer.Length)) > 0)
+                        while ((length = inStream.Read(buffer, 0, buffer.Length)) > 0)
                         {
-                            zipOutStream.Write(buffer, 0, length);
+                            outStream.Write(buffer, 0, length);
                         }
 
-                        zipOutStream.Flush();
+                        outStream.Flush();
                     }
                     finally
                     {
-                        zipOutStream.Close();
+                        outStream.Close();
                     }
                 }
+
+                progress.Report(++index * percent);
             }
         }
     }

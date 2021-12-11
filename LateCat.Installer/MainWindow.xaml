@@ -36,7 +36,7 @@
             </materialDesign:Transitioner.InputBindings>
   
             <materialDesign:TransitionerSlide OpeningEffect="{materialDesign:TransitionEffect FadeIn}">
-                <transitions:Slide1 />
+                <transitions:Slide1 x:Name="StartPage" />
             </materialDesign:TransitionerSlide>
 
             <transitions:Slide2 />

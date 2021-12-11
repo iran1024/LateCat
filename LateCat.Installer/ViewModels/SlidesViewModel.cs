@@ -15,7 +15,7 @@ namespace LateCat.Installer
             QRCode = new BitmapImage(new Uri(Path.Combine(Constants.InstallerTempDir, "qrcode.png")));
             InstallPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Late Cat");
 
-            Progress = new Progress<int>();           
+            Progress = new Progress<double>();           
         }
 
         private BitmapImage _headImage;
@@ -62,8 +62,8 @@ namespace LateCat.Installer
             }
         }
 
-        private Progress<int> _progress;
-        public Progress<int> Progress
+        private Progress<double> _progress;
+        public Progress<double> Progress
         {
             get => _progress;
             set

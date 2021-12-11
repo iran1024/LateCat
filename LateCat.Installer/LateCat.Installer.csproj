@@ -15,9 +15,6 @@
 	  <PackageReference Include="SharpZipLib" Version="1.3.3" />	 
      
  </ItemGroup>
- <ItemGroup>
-    <Folder Include="bundle\" />
-  </ItemGroup>
 
   <ItemGroup>
 	<EmbeddedResource Include="latecat\**">
@@ -26,6 +23,11 @@
 	<EmbeddedResource Include="bundle\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="bundle\bundle.zip" />
+    <None Remove="latecat\latecat.zip" />
   </ItemGroup>
 
 </Project>
