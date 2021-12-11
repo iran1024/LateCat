@@ -12,7 +12,7 @@ namespace LateCat.PoseidonEngine.Core
         msg_screenshot,
         cmd_reload,
         cmd_close,
-        cmd_Monitorshot,
+        cmd_screenshot,
         lsp_perfcntr,
         lp_slider,
         lp_textbox,
@@ -104,12 +104,12 @@ namespace LateCat.PoseidonEngine.Core
     }
 
     [Serializable]
-    public class IPCMonitorshotCmd : IPCMessage
+    public class IPCScreenshotCmd : IPCMessage
     {
         public ScreenshotFormat Format { get; set; }
         public string FilePath { get; set; }
         public uint Delay { get; set; }
-        public IPCMonitorshotCmd() : base(MessageType.cmd_Monitorshot)
+        public IPCScreenshotCmd() : base(MessageType.cmd_screenshot)
         {
         }
     }

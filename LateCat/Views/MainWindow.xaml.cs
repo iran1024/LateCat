@@ -18,15 +18,17 @@ namespace LateCat
         private WallpaperListViewModel _wallpaperListVm;
         private ISettingsService _settings;
 
+        public bool IsSupspend { get; private set; } = false;
+
         public static bool IsExit { get; set; } = false;
 
         public MainWindow()
         {
-            InitializeComponent();            
+            InitializeComponent();
 
             App.Services.GetRequiredService<IDesktopCore>().WallpaperChanged += SetupDesktop_WallpaperChanged;
 
-            DataContext = this;            
+            DataContext = this;
         }
 
         private void SetupDesktop_WallpaperChanged(object? sender, EventArgs e)
@@ -96,7 +98,7 @@ namespace LateCat
             var wallpaperLv = (WallpaperListView)Frame.Content;
 
             wallpaperLv.ContextMenuClick += WallpaperListView_ContextMenuClick;
-            wallpaperLv.FileDroppedEvent += WallpaperListView_FileDroppedEvent;            
+            wallpaperLv.FileDroppedEvent += WallpaperListView_FileDroppedEvent;
         }
 
         private void WallpaperListView_ContextMenuClick(object? sender, object e)
@@ -145,8 +147,16 @@ namespace LateCat
 
         private void BtnClose_Click(object sender, RoutedEventArgs e)
         {
+            ((App.Services.GetRequiredService<MainWindow>().Frame.Content as WallpaperListView).Previewer.Content as IPreviewer).Close();
+            IsSupspend = true;
+
             Hide();
             GC.Collect();
+        }
+
+        public void ResumePreview()
+        {
+            IsSupspend = false;
         }
 
         private void WndMain_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -242,5 +252,37 @@ namespace LateCat
             }
         }
 
+        private void BtnMinimize_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+
+            //((App.Services.GetRequiredService<MainWindow>().Frame.Content as WallpaperListView).Previewer.Content as IPreviewer).Close();
+            //IsSupspend = true;
+        }
+
+        private void WndMain_Activated(object sender, EventArgs e)
+        {
+            //if (IsSupspend)
+            //{
+            //    ((App.Services.GetRequiredService<MainWindow>().Frame.Content as WallpaperListView).Previewer.Content as IPreviewer).Preview();
+            //    ResumePreview();
+            //}
+        }
+
+        private void WndMain_StateChanged(object sender, EventArgs e)
+        {
+            if (WindowState == WindowState.Minimized)
+            {
+                ((App.Services.GetRequiredService<MainWindow>().Frame.Content as WallpaperListView).Previewer.Content as IPreviewer).Close();
+
+                IsSupspend = true;
+            }
+            else if (WindowState == WindowState.Normal)
+            {
+                ((App.Services.GetRequiredService<MainWindow>().Frame.Content as WallpaperListView).Previewer.Content as IPreviewer).Preview();
+
+                ResumePreview();
+            }
+        }
     }
 }

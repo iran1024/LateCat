@@ -204,7 +204,7 @@ namespace LateCat.CefPlayer
                                         break;
                                     case MessageType.cmd_screenshot:
                                         var success = true;
-                                        var scr = (IPCMonitorshotCmd)obj;
+                                        var scr = (IPCScreenshotCmd)obj;
                                         try
                                         {
                                             await CaptureScreenshot(chromeBrowser, scr.FilePath, scr.Format);
@@ -220,7 +220,7 @@ namespace LateCat.CefPlayer
                                         }
                                         finally
                                         {
-                                            WriteToParent(new IPCMessageMonitorshot()
+                                            WriteToParent(new IPCMessageScreenshot()
                                             {
                                                 FileName = Path.GetFileName(scr.FilePath),
                                                 Success = success

@@ -19,7 +19,7 @@ namespace LateCat.PoseidonEngine.Core
             {
                 MessageType.cmd_reload => jo.ToObject<IPCReloadCmd>(serializer),
                 MessageType.cmd_close => jo.ToObject<IPCCloseCmd>(serializer),
-                MessageType.cmd_Monitorshot => jo.ToObject<IPCMonitorshotCmd>(serializer),
+                MessageType.cmd_screenshot => jo.ToObject<IPCScreenshotCmd>(serializer),
                 MessageType.lsp_perfcntr => jo.ToObject<IPCSystemInformation>(serializer),
                 MessageType.lp_slider => jo.ToObject<IPCSlider>(serializer),
                 MessageType.lp_textbox => jo.ToObject<IPCTextBox>(serializer),

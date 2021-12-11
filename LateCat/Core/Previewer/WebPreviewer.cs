@@ -53,20 +53,22 @@ namespace LateCat.Core
 
         public async void Preview()
         {
-            if (_wv2Wnd != null)
+            if (_wv2Wnd is null)
             {
-                _wv2Wnd.Show();
-
-                Width = Program.PreviewerWidth;
-                Height = Program.PreviewerHeight;
-
-                try
-                {
-                    await _wv2Wnd.InitializeWebView2();
-                }
-                catch
-                { }
+                ChangeSource(Metadata);
             }
+
+            _wv2Wnd.Show();
+
+            Width = Program.PreviewerWidth;
+            Height = Program.PreviewerHeight;
+
+            try
+            {
+                await _wv2Wnd.InitializeWebView2();
+            }
+            catch
+            { }
         }
 
         public void Close()
@@ -75,9 +77,14 @@ namespace LateCat.Core
             Width = 0;
             RenderSize = new Size(0, 0);
 
-            _wv2Wnd.WebView2.NavigationCompleted -= WebView_NavigationCompleted;
+            if (_wv2Wnd is not null)
+            {
+                _wv2Wnd.WebView2.NavigationCompleted -= WebView_NavigationCompleted;
 
-            _wv2Wnd.Close();
+                _wv2Wnd.Close();
+
+                _wv2Wnd = null;
+            }            
         }
     }
 }

@@ -15,15 +15,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="Resources\custom.png" />
-	  <None Remove="Resources\exit.png" />
-	  <None Remove="Resources\favicon.png" />
-	  <None Remove="Resources\home.png" />
-	  <None Remove="Resources\pause.png" />
-	  <None Remove="Resources\play.png" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Resource Include="Resources\favicon.ico" />
 	</ItemGroup>
 

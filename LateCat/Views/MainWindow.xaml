@@ -10,8 +10,8 @@
         xmlns:Helpers="clr-namespace:LateCat.Helpers" xmlns:views="clr-namespace:LateCat.Views" x:Name="WndMain" x:Class="LateCat.MainWindow"
         mc:Ignorable="d"
         xmlns:wv="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
-        Height="666" Width="999" ResizeMode="NoResize" Title="{x:Static p:Resources.TitleAppName}"                
-        Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" Closing="WndMain_Closing" >
+        Height="666" Width="999" ResizeMode="CanMinimize" Title="{x:Static p:Resources.TitleAppName}"                
+        Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" Closing="WndMain_Closing" StateChanged="WndMain_StateChanged" >
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="30"/>
     </WindowChrome.WindowChrome>
@@ -37,8 +37,12 @@
                     <materialDesign:PackIcon Kind="ArrowRightThick" Height="30" Width="30" Cursor="Hand" Foreground="White" />
                 </Button>
 
-                <Button Style="{StaticResource MaterialDesignIconButton}" x:Name="BtnStatus" Height="42" Width="42" Margin="335, 0, 0, 0" WindowChrome.IsHitTestVisibleInChrome="True" HorizontalAlignment="Right" Click="BtnStatus_Click" ToolTip="{x:Static p:Resources.TitleMonitorLayout}" Cursor="Hand" Focusable="False" Foreground="White" >
+                <Button Style="{StaticResource MaterialDesignIconButton}" x:Name="BtnStatus" Height="42" Width="42" Margin="290, 0, 0, 0" WindowChrome.IsHitTestVisibleInChrome="True" HorizontalAlignment="Right" Click="BtnStatus_Click" ToolTip="{x:Static p:Resources.TitleMonitorLayout}" Cursor="Hand" Focusable="False" Foreground="White" >
                     <materialDesign:PackIcon Kind="MonitorMultiple" Height="23" Width="23" Cursor="Hand" />
+                </Button>
+                <Button Height="35" Width="35" Style="{StaticResource MaterialDesignIconButton}" WindowChrome.IsHitTestVisibleInChrome="True" 
+                        x:Name="BtnMinimize" Margin="10, 0, 0, 0" Cursor="Hand" Click="BtnMinimize_Click" Focusable="False" Foreground="White" >
+                    <materialDesign:PackIcon Kind="WindowMinimize" Height="25" Width="25" Cursor="Hand" />
                 </Button>
                 <Button Height="35" Width="35" Style="{StaticResource MaterialDesignIconButton}" WindowChrome.IsHitTestVisibleInChrome="True" 
                         x:Name="BtnClose" Margin="10, 0, 0, 0" Cursor="Hand" Click="BtnClose_Click" Focusable="False" Foreground="White" >

@@ -71,11 +71,11 @@ namespace LateCat.Cefplayer
     }
 
     [Serializable]
-    public class IPCMessageMonitorshot : IPCMessage
+    public class IPCMessageScreenshot : IPCMessage
     {
         public string FileName { get; set; }
         public bool Success { get; set; }
-        public IPCMessageMonitorshot() : base(MessageType.msg_screenshot)
+        public IPCMessageScreenshot() : base(MessageType.msg_screenshot)
         {
         }
     }
@@ -106,12 +106,12 @@ namespace LateCat.Cefplayer
     }
 
     [Serializable]
-    public class IPCMonitorshotCmd : IPCMessage
+    public class IPCScreenshotCmd : IPCMessage
     {
         public ScreenshotFormat Format { get; set; }
         public string FilePath { get; set; }
         public uint Delay { get; set; }
-        public IPCMonitorshotCmd() : base(MessageType.msg_screenshot)
+        public IPCScreenshotCmd() : base(MessageType.msg_screenshot)
         {
         }
     }

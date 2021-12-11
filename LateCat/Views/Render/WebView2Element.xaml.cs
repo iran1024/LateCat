@@ -187,9 +187,9 @@ namespace LateCat.Views
             }
         }
 
-        private void CoreWebView2_ProcessFailed(object? sender, CoreWebView2ProcessFailedEventArgs e)
+        private async void CoreWebView2_ProcessFailed(object? sender, CoreWebView2ProcessFailedEventArgs e)
         {
-
+            await App.Services.GetRequiredService<IWebView2Provider>().EnsureCoreWebView2Async();
         }
 
         #region helpers

@@ -18,7 +18,7 @@ namespace LateCat.Cefplayer
             {
                 MessageType.cmd_reload => jo.ToObject<IPCReloadCmd>(serializer),
                 MessageType.cmd_close => jo.ToObject<IPCCloseCmd>(serializer),
-                MessageType.cmd_screenshot => jo.ToObject<IPCMonitorshotCmd>(serializer),
+                MessageType.cmd_screenshot => jo.ToObject<IPCScreenshotCmd>(serializer),
                 MessageType.lsp_perfcntr => jo.ToObject<IPCSystemInformation>(serializer),
                 MessageType.lp_slider => jo.ToObject<IPCSlider>(serializer),
                 MessageType.lp_textbox => jo.ToObject<IPCTextBox>(serializer),
@@ -29,7 +29,7 @@ namespace LateCat.Cefplayer
                 MessageType.lp_chekbox => jo.ToObject<IPCCheckbox>(serializer),
                 MessageType.msg_console => jo.ToObject<IPCMessageConsole>(serializer),
                 MessageType.msg_hwnd => jo.ToObject<IPCMessageHwnd>(serializer),
-                MessageType.msg_screenshot => jo.ToObject<IPCMessageMonitorshot>(serializer),
+                MessageType.msg_screenshot => jo.ToObject<IPCMessageScreenshot>(serializer),
                 MessageType.msg_wploaded => jo.ToObject<IPCMessageWallpaperLoaded>(serializer),
                 _ => null,
             };

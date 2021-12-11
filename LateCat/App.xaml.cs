@@ -8,7 +8,7 @@ using LateCat.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
-using System.Threading.Tasks;
+using System.IO.Compression;
 using System.Windows;
 using System.Windows.Navigation;
 
@@ -125,7 +125,6 @@ namespace LateCat
             Services.GetRequiredService<RawInputDX>().Show();
             Services.GetRequiredService<IDesktopCore>().RestoreWallpaper();
             Services.GetRequiredService<IWallpaperMonitor>().Start();
-            //Services.GetRequiredService<IWebView2Provider>().EnsureCoreWebView2Async().Wait();
 
             base.OnStartup(e);
         }

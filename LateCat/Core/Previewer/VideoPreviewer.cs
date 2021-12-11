@@ -46,7 +46,7 @@ namespace LateCat.Core
 
         public new void Close()
         {
-
+            base.Close();
         }
 
         private void VideoPreviewer_MediaOpened(object sender, RoutedEventArgs e)

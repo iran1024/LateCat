@@ -7,7 +7,7 @@ namespace LateCat.PoseidonEngine
     {
         internal static class Paths
         {
-            public static string AppDataDir { get; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "LateCat");
+            public static string AppDataDir { get; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Late Cat");
             public static string WallpaperDir { get; } = Path.Combine(AppDataDir, "wallpapers");
             public static string WallpaperTempDir { get; } = Path.Combine(WallpaperDir, ".late", "temp");
             public static string WallpaperDataDir { get; } = Path.Combine(WallpaperDir, ".late", "data");

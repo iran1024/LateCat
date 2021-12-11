@@ -354,7 +354,7 @@ namespace LateCat.Core
             try
             {
                 _process.OutputDataReceived += OutputDataReceived;
-                SendMessage(new IPCMonitorshotCmd()
+                SendMessage(new IPCScreenshotCmd()
                 {
                     FilePath = Path.GetExtension(filePath) != ".jpg" ? filePath + ".jpg" : filePath,
                     Format = ScreenshotFormat.jpeg,

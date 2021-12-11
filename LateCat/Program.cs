@@ -1,13 +1,14 @@
 ﻿using LateCat.Core;
 using LateCat.Helpers;
 using LateCat.PoseidonEngine;
+using LateCat.PoseidonEngine.Abstractions;
 using LateCat.PoseidonEngine.Core;
+using LateCat.Views;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace LateCat
@@ -108,12 +109,30 @@ namespace LateCat
         {
             var mainWnd = App.Services.GetRequiredService<MainWindow>();
 
-            mainWnd?.Show();
+            if (mainWnd.IsSupspend)
+            {
+                ((App.Services.GetRequiredService<MainWindow>().Frame.Content as WallpaperListView).Previewer.Content as IPreviewer).Preview();
+                mainWnd.ResumePreview();
+            }
+
+            if (mainWnd.WindowState == WindowState.Minimized)
+            {
+                mainWnd.WindowState = WindowState.Normal;
+            }
+            else
+            {
+                mainWnd?.Show();
+            }
+
+            mainWnd.Topmost = true;
+            mainWnd.Topmost = false;
         }
 
         public static void ExitApplication()
         {
             MainWindow.IsExit = true;
+
+            ((App.Services.GetRequiredService<MainWindow>().Frame.Content as WallpaperListView).Previewer.Content as IPreviewer).Close();
 
             ((ServiceProvider)App.Services)?.Dispose();
 
