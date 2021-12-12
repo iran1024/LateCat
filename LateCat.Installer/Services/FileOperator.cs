@@ -43,20 +43,19 @@ namespace LateCat.Installer.Services
 
                 while ((zipEntry = inStream.GetNextEntry()) is not null)
                 {
-                    if (zipEntry.IsDirectory)
+                    var entryPath = Path.Combine(resource.DestinationDirectory, zipEntry.Name);
+                    var entryDir = Path.GetDirectoryName(entryPath);
+
+                    if (!Directory.Exists(entryDir))
                     {
-                        var path = Path.Combine(resource.DestinationDirectory, zipEntry.Name);
-                        if (!Directory.Exists(path))
-                        {
-                            Directory.CreateDirectory(path);
-                        }
+                        Directory.CreateDirectory(entryDir);
                     }
 
                     var fileName = Path.GetFileName(zipEntry.Name);
 
                     if (!string.IsNullOrEmpty(fileName))
                     {
-                        using var outStream = File.Create(Path.Combine(resource.DestinationDirectory, zipEntry.Name));
+                        using var outStream = File.Create(entryPath);
 
                         try
                         {
