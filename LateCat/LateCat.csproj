@@ -19,7 +19,8 @@
 	</ItemGroup>
 
   <ItemGroup>
-	  <PackageReference Include="MaterialDesignThemes" Version="4.3.0" />	 
+	  <PackageReference Include="MaterialDesignThemes" Version="4.3.0" />
+	  <ProjectReference Include="..\LateCat.Common\LateCat.Common.csproj" />	 
       <ProjectReference Include="..\LateCat.PoseidonEngine\LateCat.PoseidonEngine.csproj" />
   </ItemGroup>
 

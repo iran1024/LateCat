@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace LateCat
+namespace LateCat.Common
 {
     public abstract class ObservableObject : INotifyPropertyChanged
     {

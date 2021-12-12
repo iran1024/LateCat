@@ -11,7 +11,7 @@ namespace LateCat.PoseidonEngine.Core
             return objectType == typeof(IPCMessage);
         }
 
-        public override object? ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
             var jo = JObject.Load(reader);
 
@@ -41,7 +41,7 @@ namespace LateCat.PoseidonEngine.Core
             get { return false; }
         }
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             throw new NotImplementedException();
         }

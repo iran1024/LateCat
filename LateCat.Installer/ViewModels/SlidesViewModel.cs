@@ -1,5 +1,4 @@
-﻿using LateCat.Installer.Abstractions;
-using LateCat.Installer.Services;
+﻿using LateCat.Common;
 using System;
 using System.IO;
 using System.Windows.Forms;

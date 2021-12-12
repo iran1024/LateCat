@@ -1,4 +1,5 @@
-﻿using LateCat.PoseidonEngine.Abstractions;
+﻿using LateCat.Common;
+using LateCat.PoseidonEngine.Abstractions;
 
 namespace LateCat.Models
 {

@@ -1,4 +1,5 @@
-﻿using LateCat.PoseidonEngine.Abstractions;
+﻿using LateCat.Common;
+using LateCat.PoseidonEngine.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 

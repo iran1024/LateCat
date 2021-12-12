@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Windows.Input;
 
-namespace LateCat.Installer.Services
+namespace LateCat.Common
 {
     public class RelayCommand : ICommand
     {

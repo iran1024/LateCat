@@ -51,6 +51,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LateCat.Common\LateCat.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Resources\favicon.ico" />
     <Resource Include="Resources\favicon.png" />
   </ItemGroup>
