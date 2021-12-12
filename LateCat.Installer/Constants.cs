@@ -10,11 +10,13 @@ namespace LateCat.Installer
         {
             new ResourceMap()
             {
-                Name = "LateCat.Installer.latecat.latecat.zip",
+                Name = "Program",
+                Path = "LateCat.Installer.latecat.latecat.zip",
                 DestinationDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Late Cat")
             },
             new ResourceMap(){
-                Name = "LateCat.Installer.bundle.bundle.zip",
+                Name = "Bundle",
+                Path = "LateCat.Installer.bundle.bundle.zip",
                 DestinationDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Late Cat", "wallpapers")
             }
         };

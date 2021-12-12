@@ -6,6 +6,8 @@ namespace LateCat.Installer.Models
     {
         public string Name { get; set; }
 
+        public string Path { get; set; }
+
         public string DestinationDirectory { get; set; }
 
         public Stream? ResourceStream { get; set; }

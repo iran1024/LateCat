@@ -50,7 +50,7 @@ namespace LateCat.Installer
             {
                 foreach (var map in Constants.Resources)
                 {
-                    map.ResourceStream = _extractor.GetResource(map.Name);
+                    map.ResourceStream = _extractor.GetResource(map.Path);
                 }
 
                 FileOperator.ExtractorAll(Constants.Resources, _slidesVm.Progress);

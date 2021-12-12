@@ -50,7 +50,7 @@
             </Button>
             <Button Style="{DynamicResource MaterialDesignFloatingActionButton}"
                     VerticalAlignment="Top"
-                    Margin="16" Focusable="False" x:Name="BtnComplete" Cursor="Hand">
+                    Margin="16" Focusable="False" x:Name="BtnComplete" Cursor="Hand" ToolTip="完成">
                 <materialDesign:PackIcon Kind="CheckboxMarkedCircleOutline" Height="30" Width="30" />
             </Button>
         </StackPanel>

@@ -1,6 +1,8 @@
 ﻿using LateCat.Common;
+using LateCat.Installer.Models;
 using System;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 
@@ -8,11 +10,15 @@ namespace LateCat.Installer
 {
     internal class SlidesViewModel : ObservableObject
     {
+        private readonly ResourceMap _programResourceMap;
+
         public SlidesViewModel()
         {
+            _programResourceMap = Constants.Resources.First(n => n.Name == "Program");
+
             HeadImage = new BitmapImage(new Uri(Path.Combine(Constants.InstallerTempDir, "head.jpg")));
             QRCode = new BitmapImage(new Uri(Path.Combine(Constants.InstallerTempDir, "qrcode.png")));
-            InstallPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Late Cat");
+            InstallPath = _programResourceMap.DestinationDirectory;
 
             Progress = new Progress<double>();
         }
@@ -57,6 +63,7 @@ namespace LateCat.Installer
             set
             {
                 _isInstallStart = value;
+                _programResourceMap.DestinationDirectory = _installPath;
                 OnPropertyChanged();
             }
         }
